@@ -10,6 +10,20 @@ import { usePathname } from "next/navigation";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  let closeTimeout: NodeJS.Timeout;
+
+  const handleMouseEnter = () => {
+    if (closeTimeout) clearTimeout(closeTimeout);
+    setIsDropdownOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    closeTimeout = setTimeout(() => {
+      setIsDropdownOpen(false);
+    }, 150);
+  };
+
   const pathname = usePathname();
   const isHome = pathname === "/" || pathname === "/high_desert_volleyball" || pathname === "/high_desert_volleyball/";
 
@@ -56,16 +70,27 @@ export function Navbar() {
             ))}
             
             {/* Info Dropdown */}
-            <div className="relative group">
-              <button className="flex items-center gap-1 text-sm font-bold text-gray-600 group-hover:text-blue-600 transition-colors">
-                Resources <ChevronDown className="h-4 w-4" />
+            <div 
+              className="relative group"
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            >
+              <button className={cn(
+                "flex items-center gap-1 text-sm font-bold transition-colors",
+                isDropdownOpen ? "text-blue-600" : "text-gray-600 hover:text-blue-600"
+              )}>
+                Resources <ChevronDown className={cn("h-4 w-4 transition-transform", isDropdownOpen && "rotate-180")} />
               </button>
-              <div className="absolute top-full right-0 mt-2 w-56 bg-white border border-gray-100 shadow-xl rounded-2xl opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 py-2">
+              <div className={cn(
+                "absolute top-full right-0 mt-2 w-56 bg-white border border-gray-100 shadow-xl rounded-2xl transition-all duration-200 py-2",
+                isDropdownOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2 pointer-events-none"
+              )}>
                 <div className="absolute -top-2 left-0 right-0 h-2 bg-transparent" />
                 {infoLinks.map((link) => (
                   <Link
                     key={link.name}
                     href={link.href}
+                    onClick={() => setIsDropdownOpen(false)}
                     className="block px-4 py-2 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors"
                   >
                     {link.name}
