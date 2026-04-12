@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { siteConfig } from "@/data/site-config";
 import Link from "next/link";
+import Image from "next/image";
 import { ChevronRight, Play } from "lucide-react";
 
 export function Hero() {
@@ -67,8 +68,14 @@ export function Hero() {
             {/* Decorative cards */}
             <div className="absolute -bottom-6 -left-6 bg-white p-6 rounded-2xl shadow-xl border border-gray-100 hidden sm:block">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                    <span className="text-green-600 font-bold">JVA</span>
+                <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center overflow-hidden">
+                    <Image
+                      src="/high_desert_volleyball/logo.webp"
+                      alt="Logo"
+                      width={48}
+                      height={48}
+                      className="w-10 h-10 object-contain"
+                    />
                 </div>
                 <div>
                   <p className="text-sm font-bold text-gray-900">Sanctioned League</p>

@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X, Volleyball } from "lucide-react";
+import Image from "next/image";
+import { Menu, X } from "lucide-react";
 import { siteConfig } from "@/data/site-config";
 import { cn } from "@/lib/utils";
 
@@ -21,8 +22,14 @@ export function Navbar() {
     <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
-          <div className="flex items-center gap-2">
-            <Volleyball className="h-8 w-8 text-blue-600" />
+          <div className="flex items-center gap-3">
+            <Image
+              src="/high_desert_volleyball/logo.webp"
+              alt="HDVL Logo"
+              width={40}
+              height={40}
+              className="h-10 w-auto"
+            />
             <span className="text-xl font-bold text-gray-900">{siteConfig.shortName}</span>
           </div>
 
