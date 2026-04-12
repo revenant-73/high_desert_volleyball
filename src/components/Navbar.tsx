@@ -41,7 +41,7 @@ export function Navbar() {
   ];
 
   return (
-    <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 border-b border-gray-100">
+    <nav className="fixed top-0 w-full bg-white z-50 border-b border-gray-100 shadow-sm">
       {showBanner && (
         <div className="bg-blue-600 text-white px-4 py-2 text-center text-sm font-medium relative flex items-center justify-center min-h-[40px]">
           <span className="pr-8">We are looking for additional gym space for our Jan & Feb tournaments!</span>

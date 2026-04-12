@@ -56,16 +56,16 @@ export function Hero() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="relative"
           >
-            <div className="aspect-square bg-gradient-to-tr from-blue-600 to-blue-400 rounded-3xl rotate-3 overflow-hidden shadow-2xl relative">
+            <div className="aspect-square bg-blue-600 rounded-3xl rotate-3 overflow-hidden shadow-2xl relative">
                 <video 
                   autoPlay 
                   muted 
                   loop 
                   playsInline 
+                  webkit-playsinline="true"
                   className="absolute inset-0 w-full h-full object-cover -rotate-3 scale-110"
                 >
                   <source src="/high_desert_volleyball/awesome_rally.mp4" type="video/mp4" />
-                  Your browser does not support the video tag.
                 </video>
                 {/* Overlay for better text readability if needed */}
                 <div className="absolute inset-0 bg-black/10 -rotate-3" />
