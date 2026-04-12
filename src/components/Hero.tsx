@@ -56,7 +56,7 @@ export function Hero() {
                   webkit-playsinline="true"
                   className="absolute inset-0 w-full h-full object-cover -rotate-3 scale-110"
                 >
-                  <source src={`${siteConfig.basePath}/awesome_rally.mp4`} type="video/mp4" />
+                  <source src="/awesome_rally.mp4" type="video/mp4" />
                 </video>
                 {/* Overlay for better text readability if needed */}
                 <div className="absolute inset-0 bg-black/10 -rotate-3" />

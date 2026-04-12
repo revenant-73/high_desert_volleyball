@@ -61,7 +61,7 @@ export function Features() {
                     <p className="text-sm text-gray-600 leading-snug">{feature.description}</p>
                     {feature.logo && (
                       <Image 
-                        src={`${siteConfig.basePath}${feature.logo}`} 
+                        src={`${feature.logo}`} 
                         alt="Feature Logo" 
                         width={100} 
                         height={40} 
@@ -77,7 +77,7 @@ export function Features() {
           <div className="relative">
             <div className="bg-blue-600 aspect-video rounded-3xl overflow-hidden shadow-2xl relative z-10">
                 <Image 
-                  src={`${siteConfig.basePath}/team_photo.jpg`} 
+                  src="/team_photo.jpg" 
                   alt="HDVL Team" 
                   fill
                   className="object-cover"

@@ -26,7 +26,7 @@ export function Navbar() {
   };
 
   const pathname = usePathname();
-  const isHome = pathname === "/" || pathname === siteConfig.basePath || pathname === `${siteConfig.basePath}/`;
+  const isHome = pathname === "/";
 
   const navLinks = [
     { name: "Home", href: isHome ? "#" : "/" },
@@ -58,7 +58,7 @@ export function Navbar() {
         <div className="flex justify-between h-20 items-center">
           <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             <Image
-              src={`${siteConfig.basePath}/logo.webp`}
+              src="/logo.webp"
               alt="HDVL Logo"
               width={48}
               height={48}
