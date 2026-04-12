@@ -14,7 +14,7 @@ export function Footer() {
               alt="HDVL Logo"
               width={32}
               height={32}
-              className="h-8 w-auto brightness-0 invert"
+              className="h-8 w-auto"
             />
             <span className="text-xl font-bold">{siteConfig.shortName}</span>
           </div>
