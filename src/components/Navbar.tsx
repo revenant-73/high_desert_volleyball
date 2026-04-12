@@ -61,6 +61,7 @@ export function Navbar() {
                 Resources <ChevronDown className="h-4 w-4" />
               </button>
               <div className="absolute top-full right-0 mt-2 w-56 bg-white border border-gray-100 shadow-xl rounded-2xl opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 py-2">
+                <div className="absolute -top-2 left-0 right-0 h-2 bg-transparent" />
                 {infoLinks.map((link) => (
                   <Link
                     key={link.name}
