@@ -64,7 +64,7 @@ export function Features() {
             <div className="bg-blue-600 aspect-video rounded-3xl overflow-hidden shadow-2xl relative z-10">
                 {/* Image placeholder */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent flex items-end p-8">
-                    <p className="text-white font-medium italic text-lg">"Excellence in every serve, every set, every spike."</p>
+                    <p className="text-white font-medium italic text-lg">&quot;Excellence in every serve, every set, every spike.&quot;</p>
                 </div>
             </div>
             <div className="absolute -top-6 -right-6 w-32 h-32 bg-blue-100 rounded-full -z-0" />

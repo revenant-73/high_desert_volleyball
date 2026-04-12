@@ -1,5 +1,5 @@
 import { events } from "@/data/site-config";
-import { Calendar, Users, DollarSign } from "lucide-react";
+import { Calendar, DollarSign } from "lucide-react";
 
 export function Events() {
   return (
