@@ -8,7 +8,7 @@ import { ChevronRight, Play } from "lucide-react";
 
 export function Hero() {
   return (
-    <section className="relative min-h-[90vh] flex items-center pt-20 pb-12 overflow-hidden bg-white">
+    <section className="relative min-h-[90vh] flex items-center pt-32 pb-12 overflow-hidden bg-white">
       {/* Background blobs */}
       <div className="absolute top-0 -right-20 w-96 h-96 bg-blue-50 rounded-full blur-3xl opacity-50" />
       <div className="absolute bottom-0 -left-20 w-96 h-96 bg-blue-100 rounded-full blur-3xl opacity-30" />
