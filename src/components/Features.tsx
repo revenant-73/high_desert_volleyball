@@ -75,9 +75,15 @@ export function Features() {
 
           <div className="relative">
             <div className="bg-blue-600 aspect-video rounded-3xl overflow-hidden shadow-2xl relative z-10">
-                {/* Image placeholder */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent flex items-end p-8">
-                    <p className="text-white font-medium italic text-lg">&quot;Excellence in every serve, every set, every spike.&quot;</p>
+                <Image 
+                  src="/high_desert_volleyball/team_photo.jpg" 
+                  alt="HDVL Team" 
+                  fill
+                  className="object-cover"
+                />
+                {/* Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-8">
+                    <p className="text-white font-medium italic text-lg relative z-10">&quot;Excellence in every serve, every set, every spike.&quot;</p>
                 </div>
             </div>
             <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-blue-50 rounded-full -z-0" />

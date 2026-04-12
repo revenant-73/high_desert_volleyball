@@ -56,14 +56,19 @@ export function Hero() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="relative"
           >
-            <div className="aspect-square bg-gradient-to-tr from-blue-600 to-blue-400 rounded-3xl rotate-3 flex items-center justify-center overflow-hidden">
-                {/* Image Placeholder */}
-                <div className="text-white text-center p-8 -rotate-3">
-                    <div className="bg-white/20 p-6 rounded-full inline-block mb-4">
-                        <Play className="h-12 w-12 fill-white ml-1" />
-                    </div>
-                    <p className="text-lg font-medium">Capture the intensity of the game</p>
-                </div>
+            <div className="aspect-square bg-gradient-to-tr from-blue-600 to-blue-400 rounded-3xl rotate-3 overflow-hidden shadow-2xl relative">
+                <video 
+                  autoPlay 
+                  muted 
+                  loop 
+                  playsInline 
+                  className="absolute inset-0 w-full h-full object-cover -rotate-3 scale-110"
+                >
+                  <source src="/high_desert_volleyball/awesome_rally.mp4" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+                {/* Overlay for better text readability if needed */}
+                <div className="absolute inset-0 bg-black/10 -rotate-3" />
             </div>
             {/* Decorative cards */}
             <div className="absolute -bottom-6 -left-6 bg-white p-6 rounded-2xl shadow-xl border border-gray-100 hidden sm:block">
