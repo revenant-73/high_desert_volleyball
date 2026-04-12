@@ -11,6 +11,7 @@ import { usePathname } from "next/navigation";
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [showBanner, setShowBanner] = useState(true);
   let closeTimeout: NodeJS.Timeout;
 
   const handleMouseEnter = () => {
@@ -41,6 +42,18 @@ export function Navbar() {
 
   return (
     <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 border-b border-gray-100">
+      {showBanner && (
+        <div className="bg-blue-600 text-white px-4 py-2 text-center text-sm font-medium relative flex items-center justify-center min-h-[40px]">
+          <span className="pr-8">We are looking for additional gym space for our Jan & Feb tournaments!</span>
+          <button 
+            onClick={() => setShowBanner(false)}
+            className="absolute right-2 p-1 hover:bg-blue-700 rounded-full transition-colors"
+            aria-label="Close announcement"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      )}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-20 items-center">
           <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
@@ -122,7 +135,8 @@ export function Navbar() {
       {/* Mobile Menu */}
       <div
         className={cn(
-          "md:hidden absolute top-20 w-full bg-white border-b border-gray-100 transition-all duration-300 ease-in-out shadow-xl",
+          "md:hidden absolute w-full bg-white border-b border-gray-100 transition-all duration-300 ease-in-out shadow-xl",
+          showBanner ? "top-[120px]" : "top-20",
           isOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4 pointer-events-none"
         )}
       >
