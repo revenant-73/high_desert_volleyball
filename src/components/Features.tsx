@@ -80,11 +80,11 @@ export function Features() {
                     <p className="text-white font-medium italic text-lg">&quot;Excellence in every serve, every set, every spike.&quot;</p>
                 </div>
             </div>
-            <div className="absolute -top-10 -right-10 w-40 h-40 bg-blue-50 rounded-full -z-0" />
-            <div className="absolute -bottom-10 -left-10 w-64 h-64 bg-gray-50 rounded-full -z-0" />
+            <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-blue-50 rounded-full -z-0" />
+            <div className="absolute -top-10 -left-10 w-64 h-64 bg-gray-50 rounded-full -z-0" />
             
             {/* JVA Spotlight badge */}
-            <div className="absolute -bottom-6 -right-6 bg-white p-6 rounded-2xl shadow-xl border border-gray-100 z-20 max-w-[200px]">
+            <div className="absolute -top-6 -right-6 bg-white p-6 rounded-2xl shadow-xl border border-gray-100 z-20 max-w-[200px]">
               <Image 
                 src="/high_desert_volleyball/jva-logo.png" 
                 alt="JVA Logo" 
