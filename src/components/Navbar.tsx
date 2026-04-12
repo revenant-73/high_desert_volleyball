@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Menu, X, ChevronDown } from "lucide-react";
@@ -12,15 +12,21 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [showBanner, setShowBanner] = useState(true);
-  let closeTimeout: NodeJS.Timeout;
+  const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
+    };
+  }, []);
 
   const handleMouseEnter = () => {
-    if (closeTimeout) clearTimeout(closeTimeout);
+    if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
     setIsDropdownOpen(true);
   };
 
   const handleMouseLeave = () => {
-    closeTimeout = setTimeout(() => {
+    closeTimeoutRef.current = setTimeout(() => {
       setIsDropdownOpen(false);
     }, 150);
   };
