@@ -43,8 +43,15 @@ export function Footer() {
           </a>
         </div>
       </div>
-      <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-gray-800 text-center text-gray-500 text-xs">
-        <p>&copy; {new Date().getFullYear()} {siteConfig.name}. All Rights Reserved.</p>
+      <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-gray-800 flex flex-col items-center gap-4 text-gray-500 text-xs text-center">
+        <Image
+          src="/high_desert_volleyball/logo.webp"
+          alt="HDVL Logo"
+          width={40}
+          height={40}
+          className="h-10 w-auto opacity-50 hover:opacity-100 transition-opacity"
+        />
+        <p>&copy; 2026 {siteConfig.name}. All Rights Reserved.</p>
       </div>
     </footer>
   );
