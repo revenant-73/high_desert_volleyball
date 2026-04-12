@@ -82,15 +82,6 @@ export function Events() {
                         </p>
                       </div>
                     </div>
-
-                    <div className="pt-4 flex flex-col sm:flex-row gap-4">
-                      <button className="bg-blue-600 text-white px-8 py-3.5 rounded-xl text-sm font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20 active:scale-[0.98]">
-                        Register Your Team
-                      </button>
-                      <button className="bg-white border-2 border-gray-100 text-gray-600 px-8 py-3.5 rounded-xl text-sm font-bold hover:border-blue-600 hover:text-blue-600 transition-all active:scale-[0.98]">
-                        Contact Organizer
-                      </button>
-                    </div>
                   </div>
                 </div>
               </div>
