@@ -5,7 +5,7 @@ export const siteConfig = {
   email: "highdesertvball@gmail.com",
   description: "HDVL is the only JVA sanctioned league in Southern Idaho, ensuring a high level of coaching education, player safety, and officiating. Open to teams of all ages (12u-18u) and affiliations (USA, AAU, or none).",
   links: {
-    register: "https://highdesertvball.com/registration", // Update this as needed
+    register: "/register-guide", // Update this as needed
     waiver: "https://highdesertvball.com/waivers",
   },
 };
