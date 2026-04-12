@@ -15,11 +15,7 @@ export function Hero() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-          >
+          <motion.div>
             <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-600 px-4 py-2 rounded-full text-sm font-semibold mb-6">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
@@ -50,12 +46,7 @@ export function Hero() {
             </div>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative"
-          >
+          <motion.div className="relative">
             <div className="aspect-square bg-blue-600 rounded-3xl rotate-3 overflow-hidden shadow-2xl relative">
                 <video 
                   autoPlay 
@@ -65,7 +56,7 @@ export function Hero() {
                   webkit-playsinline="true"
                   className="absolute inset-0 w-full h-full object-cover -rotate-3 scale-110"
                 >
-                  <source src="/high_desert_volleyball/awesome_rally.mp4" type="video/mp4" />
+                  <source src={`${siteConfig.basePath}/awesome_rally.mp4`} type="video/mp4" />
                 </video>
                 {/* Overlay for better text readability if needed */}
                 <div className="absolute inset-0 bg-black/10 -rotate-3" />

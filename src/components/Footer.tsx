@@ -10,7 +10,7 @@ export function Footer() {
         <div className="flex flex-col gap-4 max-w-sm">
           <div className="flex items-center gap-3">
             <Image
-              src="/high_desert_volleyball/logo.webp"
+              src={`${siteConfig.basePath}/logo.webp`}
               alt="HDVL Logo"
               width={32}
               height={32}
@@ -45,7 +45,7 @@ export function Footer() {
       </div>
       <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-gray-800 flex flex-col items-center gap-4 text-gray-500 text-xs text-center">
         <Image
-          src="/high_desert_volleyball/logo.webp"
+          src={`${siteConfig.basePath}/logo.webp`}
           alt="HDVL Logo"
           width={40}
           height={40}

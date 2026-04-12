@@ -1,5 +1,6 @@
 import { Shield, Target, Award, Users } from "lucide-react";
 import Image from "next/image";
+import { siteConfig } from "@/data/site-config";
 
 export function Features() {
   const features = [
@@ -9,7 +10,7 @@ export function Features() {
       icon: Shield,
       color: "text-blue-600",
       bgColor: "bg-blue-50",
-      logo: "/high_desert_volleyball/jva-logo.png",
+      logo: "/jva-logo.png",
     },
     {
       title: "Open Affiliation",
@@ -60,7 +61,7 @@ export function Features() {
                     <p className="text-sm text-gray-600 leading-snug">{feature.description}</p>
                     {feature.logo && (
                       <Image 
-                        src={feature.logo} 
+                        src={`${siteConfig.basePath}${feature.logo}`} 
                         alt="Feature Logo" 
                         width={100} 
                         height={40} 
@@ -76,7 +77,7 @@ export function Features() {
           <div className="relative">
             <div className="bg-blue-600 aspect-video rounded-3xl overflow-hidden shadow-2xl relative z-10">
                 <Image 
-                  src="/high_desert_volleyball/team_photo.jpg" 
+                  src={`${siteConfig.basePath}/team_photo.jpg`} 
                   alt="HDVL Team" 
                   fill
                   className="object-cover"

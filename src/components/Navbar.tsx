@@ -26,7 +26,7 @@ export function Navbar() {
   };
 
   const pathname = usePathname();
-  const isHome = pathname === "/" || pathname === "/high_desert_volleyball" || pathname === "/high_desert_volleyball/";
+  const isHome = pathname === "/" || pathname === siteConfig.basePath || pathname === `${siteConfig.basePath}/`;
 
   const navLinks = [
     { name: "Home", href: isHome ? "#" : "/" },
@@ -58,7 +58,7 @@ export function Navbar() {
         <div className="flex justify-between h-20 items-center">
           <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             <Image
-              src="/high_desert_volleyball/logo.webp"
+              src={`${siteConfig.basePath}/logo.webp`}
               alt="HDVL Logo"
               width={48}
               height={48}
