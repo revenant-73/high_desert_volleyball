@@ -1,4 +1,5 @@
 import { Shield, Target, Award, Users } from "lucide-react";
+import Image from "next/image";
 
 export function Features() {
   const features = [
@@ -8,6 +9,7 @@ export function Features() {
       icon: Shield,
       color: "text-blue-600",
       bgColor: "bg-blue-50",
+      logo: "/high_desert_volleyball/jva-logo.png",
     },
     {
       title: "Open Affiliation",
@@ -33,7 +35,7 @@ export function Features() {
   ];
 
   return (
-    <section id="about" className="py-24 bg-white">
+    <section id="about" className="py-24 bg-white overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div>
@@ -47,13 +49,24 @@ export function Features() {
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {features.map((feature) => (
-                <div key={feature.title} className="flex gap-4">
-                  <div className={`${feature.bgColor} p-3 rounded-lg h-fit`}>
-                    <feature.icon className={`h-6 w-6 ${feature.color}`} />
+                <div key={feature.title} className="flex flex-col gap-4 p-4 rounded-2xl hover:bg-gray-50 transition-colors">
+                  <div className="flex items-center gap-4">
+                    <div className={`${feature.bgColor} p-3 rounded-lg h-fit`}>
+                      <feature.icon className={`h-6 w-6 ${feature.color}`} />
+                    </div>
+                    <h3 className="font-bold text-gray-900">{feature.title}</h3>
                   </div>
-                  <div>
-                    <h3 className="font-bold text-gray-900 mb-1">{feature.title}</h3>
+                  <div className="space-y-3">
                     <p className="text-sm text-gray-600 leading-snug">{feature.description}</p>
+                    {feature.logo && (
+                      <Image 
+                        src={feature.logo} 
+                        alt="Feature Logo" 
+                        width={100} 
+                        height={40} 
+                        className="h-10 w-auto object-contain"
+                      />
+                    )}
                   </div>
                 </div>
               ))}
@@ -67,8 +80,21 @@ export function Features() {
                     <p className="text-white font-medium italic text-lg">&quot;Excellence in every serve, every set, every spike.&quot;</p>
                 </div>
             </div>
-            <div className="absolute -top-6 -right-6 w-32 h-32 bg-blue-100 rounded-full -z-0" />
-            <div className="absolute -bottom-6 -left-6 w-48 h-48 bg-gray-100 rounded-full -z-0" />
+            <div className="absolute -top-10 -right-10 w-40 h-40 bg-blue-50 rounded-full -z-0" />
+            <div className="absolute -bottom-10 -left-10 w-64 h-64 bg-gray-50 rounded-full -z-0" />
+            
+            {/* JVA Spotlight badge */}
+            <div className="absolute -bottom-6 -right-6 bg-white p-6 rounded-2xl shadow-xl border border-gray-100 z-20 max-w-[200px]">
+              <Image 
+                src="/high_desert_volleyball/jva-logo.png" 
+                alt="JVA Logo" 
+                width={120} 
+                height={50} 
+                className="mb-3"
+              />
+              <p className="text-[10px] uppercase font-bold text-blue-600 tracking-wider">Premier Sanctioning</p>
+              <p className="text-xs text-gray-500 mt-1">100% focused on junior clubs and player safety.</p>
+            </div>
           </div>
         </div>
       </div>
