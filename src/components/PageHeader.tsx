@@ -5,7 +5,7 @@ interface PageHeaderProps {
 
 export function PageHeader({ title, subtitle }: PageHeaderProps) {
   return (
-    <div className="bg-blue-600 pt-32 pb-16 px-4">
+    <div className="bg-blue-600 pt-52 md:pt-40 pb-16 px-4">
       <div className="max-w-7xl mx-auto text-center">
         <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-4">
           {title}

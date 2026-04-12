@@ -142,8 +142,7 @@ export function Navbar() {
       <div
         className={cn(
           "md:hidden absolute w-full bg-white border-b border-gray-100 transition-all duration-300 ease-in-out shadow-xl",
-          showBanner ? "top-[120px]" : "top-20",
-          isOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4 pointer-events-none"
+          isOpen ? "top-full opacity-100 translate-y-0" : "top-full opacity-0 -translate-y-4 pointer-events-none"
         )}
       >
         <div className="px-4 pt-4 pb-8 space-y-2">
