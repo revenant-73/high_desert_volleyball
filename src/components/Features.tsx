@@ -88,19 +88,6 @@ export function Features() {
             </div>
             <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-blue-50 rounded-full -z-0" />
             <div className="absolute -top-10 -left-10 w-64 h-64 bg-gray-50 rounded-full -z-0" />
-            
-            {/* JVA Spotlight badge */}
-            <div className="absolute -top-6 -right-6 bg-white p-6 rounded-2xl shadow-xl border border-gray-100 z-20 max-w-[200px]">
-              <Image 
-                src="/high_desert_volleyball/jva-logo.png" 
-                alt="JVA Logo" 
-                width={120} 
-                height={50} 
-                className="mb-3"
-              />
-              <p className="text-[10px] uppercase font-bold text-blue-600 tracking-wider">Premier Sanctioning</p>
-              <p className="text-xs text-gray-500 mt-1">100% focused on junior clubs and player safety.</p>
-            </div>
           </div>
         </div>
       </div>
