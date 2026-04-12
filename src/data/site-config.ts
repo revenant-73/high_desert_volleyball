@@ -4,7 +4,6 @@ export const siteConfig = {
   tagline: "Southwest Idaho's First Choice for Youth Volleyball",
   email: "highdesertvball@gmail.com",
   description: "HDVL is the only JVA sanctioned league in Southern Idaho, ensuring a high level of coaching education, player safety, and officiating. Open to teams of all ages (12u-18u) and affiliations (USA, AAU, or none).",
-  basePath: process.env.NODE_ENV === 'production' ? '/high_desert_volleyball' : '',
   links: {
     register: "/register-guide", // Update this as needed
     waiver: "https://highdesertvball.com/waivers",
