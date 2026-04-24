@@ -1,7 +1,10 @@
 import { createReader } from '@keystatic/core/reader';
 import keystaticConfig from '../../keystatic.config';
 
-export const reader = createReader(process.cwd(), keystaticConfig);
+export const reader = createReader(process.cwd(), {
+  ...keystaticConfig,
+  storage: { kind: 'local' }
+} as any);
 
 export const siteConfig = {
   name: "High Desert Volleyball League",
