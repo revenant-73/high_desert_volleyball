@@ -8,7 +8,7 @@ export default config({
     events: collection({
       label: 'Events',
       slugField: 'name',
-      path: 'src/content/events/*',
+      path: 'src/content/events/*/index',
       format: { data: 'json' },
       schema: {
         name: fields.text({ label: 'Event Name' }),
@@ -21,7 +21,7 @@ export default config({
     venues: collection({
       label: 'Venues',
       slugField: 'name',
-      path: 'src/content/venues/*',
+      path: 'src/content/venues/*/index',
       format: { data: 'json' },
       schema: {
         name: fields.text({ label: 'Venue Name' }),
