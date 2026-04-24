@@ -1,0 +1,117 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Navbar } from '../components/Navbar';
+import { Footer } from '../components/Footer';
+import { PageHeader } from '../components/PageHeader';
+import { CheckCircle2, Layout as LayoutIcon, Users, Send } from "lucide-react";
+import { getSiteConfig } from '../lib/keystatic';
+
+const siteConfig = await getSiteConfig();
+
+if (!siteConfig) {
+  throw new Error('Site configuration not found');
+}
+
+const steps = [
+  {
+    title: "Step 1: Create Club Account",
+    subtitle: "Setting up your organization on TM2Sign.com",
+    icon: LayoutIcon,
+    details: [
+      "Create a club on TM2Sign.com",
+      "CLUB NAME: Full name of your club (ex. Rise Volleyball Academy)",
+      "CLUB ALIAS: Short name for your club (ex. Rise)",
+      "Check the box to allow the system to use your CLUB ALIAS when creating team names."
+    ]
+  },
+  {
+    title: "Step 2: Create Team(s)",
+    subtitle: "Adding individual teams to your club roster",
+    icon: Users,
+    details: [
+      "Under the 'teams' tab, click 'Add Team'",
+      "Team Name: Just the specific team name (ex. 18 Steve). Club name is added automatically.",
+      "Gender: Female, Male, or Co-ed (if mixed).",
+      "Type: Juniors",
+      "choose the correct age group for the team",
+      "Team Rank: Your internal ranking if you have multiple teams in an age group."
+    ]
+  },
+  {
+    title: "Step 3: Register for event(s)",
+    subtitle: "Entering your teams into HDVL tournaments",
+    icon: Send,
+    details: [
+      "Click on the 'Enter Events' tab",
+      "Type 'HDVL' into the search box",
+      "Click the GREEN 'Register' button on the far right",
+      "Select a division that meets your team's age requirements",
+      "Click 'Submit Pending Registrations'"
+    ]
+  }
+];
+---
+
+<Layout title={`Registration Guide | ${siteConfig.shortName}`}>
+	<main class="min-h-screen bg-gray-950">
+		<Navbar client:load siteConfig={siteConfig} />
+		<PageHeader 
+			title="Registration Guide" 
+			subtitle="Follow these steps to register your team(s) for HDVL events on TM2Sign."
+		/>
+		
+		<div class="max-w-4xl mx-auto py-16 px-4">
+			<div class="relative space-y-16">
+        {/* Connection Line (Desktop) */}
+        <div class="absolute left-8 top-10 bottom-10 w-px bg-gray-800 hidden md:block" />
+
+				{steps.map((step, index) => (
+					<div class="relative flex flex-col md:flex-row gap-8 group">
+            {/* Step Icon Container */}
+						<div class="flex-shrink-0 relative z-10">
+							<div class="bg-gray-900 w-16 h-16 rounded-2xl flex items-center justify-center border border-gray-800 group-hover:border-blue-500/50 transition-colors shadow-xl">
+								<step.icon class="h-8 w-8 text-blue-500" />
+							</div>
+              <div class="absolute -top-2 -right-2 bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center font-black text-[10px] shadow-lg shadow-blue-900/40">
+                {index + 1}
+              </div>
+						</div>
+
+						<div class="flex-1 bg-gray-900/50 rounded-3xl p-8 border border-gray-800/50 hover:border-gray-700 transition-all hover:bg-gray-900 group-hover:shadow-2xl group-hover:shadow-blue-900/10">
+							<div class="mb-10">
+								<h2 class="text-3xl md:text-5xl font-black text-white tracking-tight mb-3">{step.title}</h2>
+                <p class="text-blue-500 text-base font-bold uppercase tracking-[0.2em]">{step.subtitle}</p>
+							</div>
+
+							<div class="grid grid-cols-1 gap-4">
+								{step.details.map((detail) => (
+									<div class="flex flex-row gap-4 p-4 rounded-2xl bg-gray-950/50 border border-gray-800/30 text-gray-400 text-sm leading-relaxed items-center">
+										<CheckCircle2 class="h-5 w-5 text-blue-500 flex-shrink-0" />
+										<span>{detail}</span>
+									</div>
+								))}
+							</div>
+						</div>
+					</div>
+				))}
+			</div>
+
+			<div class="mt-24 bg-blue-600 rounded-3xl p-10 text-center text-white shadow-2xl shadow-blue-900/20 relative overflow-hidden">
+				<div class="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-[80px] rounded-full -translate-y-1/2 translate-x-1/2" />
+				<div class="relative z-10">
+					<h3 class="text-3xl font-black mb-4">Ready to Register?</h3>
+					<p class="mb-10 text-blue-100 text-lg">Head over to TM2Sign to get your teams started.</p>
+					<a 
+						href="https://tm2sign.com" 
+						target="_blank" 
+						rel="noopener noreferrer"
+						class="inline-block bg-white text-blue-600 px-10 py-4 rounded-full font-bold text-lg hover:bg-blue-50 transition-all hover:scale-105 active:scale-95 shadow-xl shadow-blue-900/20"
+					>
+						Visit TM2Sign.com
+					</a>
+				</div>
+			</div>
+		</div>
+		<Footer siteConfig={siteConfig} />
+	</main>
+</Layout>

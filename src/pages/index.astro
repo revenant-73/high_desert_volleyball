@@ -1,0 +1,26 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Navbar } from '../components/Navbar';
+import { Hero } from '../components/Hero';
+import { Features } from '../components/Features';
+import { Events } from '../components/Events';
+import { Footer } from '../components/Footer';
+import { getEvents, getSiteConfig } from '../lib/keystatic';
+
+const events = await getEvents();
+const siteConfig = await getSiteConfig();
+
+if (!siteConfig) {
+  throw new Error('Site configuration not found');
+}
+---
+
+<Layout title={`${siteConfig.name} | Youth Volleyball in Southern Idaho`}>
+	<main>
+		<Navbar client:load siteConfig={siteConfig} />
+		<Hero client:load siteConfig={siteConfig} />
+		<Features client:visible />
+		<Events client:visible events={events} />
+		<Footer siteConfig={siteConfig} />
+	</main>
+</Layout>
