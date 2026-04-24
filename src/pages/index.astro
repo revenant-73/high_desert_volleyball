@@ -5,14 +5,9 @@ import { Hero } from '../components/Hero';
 import { Features } from '../components/Features';
 import { Events } from '../components/Events';
 import { Footer } from '../components/Footer';
-import { getEvents, getSiteConfig } from '../lib/keystatic';
+import { getEvents, siteConfig } from '../lib/keystatic';
 
 const events = await getEvents();
-const siteConfig = await getSiteConfig();
-
-if (!siteConfig) {
-  throw new Error('Site configuration not found');
-}
 ---
 
 <Layout title={`${siteConfig.name} | Youth Volleyball in Southern Idaho`}>

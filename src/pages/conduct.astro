@@ -4,13 +4,7 @@ import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { PageHeader } from '../components/PageHeader';
 import { ShieldCheck, XCircle, AlertCircle } from "lucide-react";
-import { getSiteConfig } from '../lib/keystatic';
-
-const siteConfig = await getSiteConfig();
-
-if (!siteConfig) {
-  throw new Error('Site configuration not found');
-}
+import { siteConfig } from '../lib/keystatic';
 
 const positives = [
   "I WILL abide by the official rules of USA Volleyball",

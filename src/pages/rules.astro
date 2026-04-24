@@ -4,14 +4,9 @@ import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { PageHeader } from '../components/PageHeader';
 import { MapPin, Info, AlertTriangle } from "lucide-react";
-import { getVenues, getSiteConfig } from '../lib/keystatic';
+import { getVenues, siteConfig } from '../lib/keystatic';
 
 const venues = await getVenues();
-const siteConfig = await getSiteConfig();
-
-if (!siteConfig) {
-  throw new Error('Site configuration not found');
-}
 ---
 
 <Layout title={`Site Rules & Regulations | ${siteConfig.shortName}`}>

@@ -3,9 +3,17 @@ import keystaticConfig from '../../keystatic.config';
 
 export const reader = createReader(process.cwd(), keystaticConfig);
 
-export async function getSiteConfig() {
-  return await reader.singletons.siteConfig.read();
-}
+export const siteConfig = {
+  name: "High Desert Volleyball League",
+  shortName: "HDVL",
+  tagline: "Southwest Idaho's First Choice for Youth Volleyball",
+  email: "highdesertvball@gmail.com",
+  description: "HDVL is the only JVA sanctioned league in Southern Idaho, ensuring a high level of coaching education, player safety, and officiating. Open to teams of all ages (12u-18u) and affiliations (USA, AAU, or none).",
+  links: {
+    register: "/register-guide",
+    waiver: "https://highdesertvball.com/waivers",
+  },
+};
 
 export async function getEvents() {
   const events = await reader.collections.events.all();
