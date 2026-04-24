@@ -1,14 +1,17 @@
 import { config, fields, collection, singleton } from '@keystatic/core';
 
 export default config({
-  storage: {
-    kind: 'local',
-  },
+  storage: process.env.NODE_ENV === 'production' 
+    ? { 
+        kind: 'github', 
+        repo: 'revenant-73/high_desert_volleyball' // Ensure this matches your "owner/repo" on GitHub
+      } 
+    : { kind: 'local' },
   collections: {
     events: collection({
       label: 'Events',
       slugField: 'name',
-      path: 'src/content/events/*/index',
+      path: 'src/content/events/*',
       format: { data: 'json' },
       schema: {
         name: fields.text({ label: 'Event Name' }),
@@ -21,7 +24,7 @@ export default config({
     venues: collection({
       label: 'Venues',
       slugField: 'name',
-      path: 'src/content/venues/*/index',
+      path: 'src/content/venues/*',
       format: { data: 'json' },
       schema: {
         name: fields.text({ label: 'Venue Name' }),
