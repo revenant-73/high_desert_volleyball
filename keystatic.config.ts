@@ -1,10 +1,10 @@
 import { config, fields, collection, singleton } from '@keystatic/core';
 
 export default config({
-  storage: process.env.NODE_ENV === 'production' 
+  storage: (process.env.NODE_ENV === 'production' && process.env.KEYSTATIC_GITHUB_CLIENT_ID)
     ? { 
         kind: 'github', 
-        repo: 'revenant-73/high_desert_volleyball' // Ensure this matches your "owner/repo" on GitHub
+        repo: 'revenant-73/high_desert_volleyball'
       } 
     : { kind: 'local' },
   collections: {
