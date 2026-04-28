@@ -234,7 +234,8 @@ export default function VenueManager({ initialVenues }: { initialVenues: Venue[]
       )}
 
       <div className="bg-zinc-900 rounded-xl border border-zinc-800 overflow-hidden">
-        <div className="overflow-x-auto">
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left">
             <thead>
               <tr className="border-b border-zinc-800 bg-zinc-900/50">
@@ -274,16 +275,48 @@ export default function VenueManager({ initialVenues }: { initialVenues: Venue[]
                   </td>
                 </tr>
               ))}
-              {venues.length === 0 && (
-                <tr>
-                  <td colSpan={4} className="px-6 py-12 text-center text-zinc-500">
-                    No venues found. Click "Add Venue" to create one.
-                  </td>
-                </tr>
-              )}
             </tbody>
           </table>
         </div>
+
+        {/* Mobile Card View */}
+        <div className="md:hidden divide-y divide-zinc-800">
+          {venues.map((venue) => (
+            <div key={venue.id} className="p-4 space-y-3">
+              <div className="flex justify-between items-start">
+                <div className="flex-1 min-w-0 pr-4">
+                  <div className="font-bold text-lg truncate">{venue.name}</div>
+                  <div className="text-zinc-400 text-sm truncate">{venue.address}</div>
+                </div>
+                <div className="flex gap-1 shrink-0">
+                  <button
+                    onClick={() => handleEdit(venue)}
+                    className="p-2 text-zinc-400 hover:text-blue-500 transition-colors"
+                  >
+                    <Pencil size={18} />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(venue.id)}
+                    className="p-2 text-zinc-400 hover:text-red-500 transition-colors"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <span className="bg-zinc-800 px-2.5 py-1 rounded-full text-xs font-medium text-blue-400 border border-blue-900/30">
+                  {venue.rules.length} Rules Defined
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {venues.length === 0 && (
+          <div className="px-6 py-12 text-center text-zinc-500">
+            No venues found. Click "Add Venue" to create one.
+          </div>
+        )}
       </div>
     </div>
   );

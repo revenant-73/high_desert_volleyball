@@ -218,7 +218,8 @@ export default function EventManager({ initialEvents }: { initialEvents: Event[]
       )}
 
       <div className="bg-zinc-900 rounded-xl border border-zinc-800 overflow-hidden">
-        <div className="overflow-x-auto">
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left">
             <thead>
               <tr className="border-b border-zinc-800 bg-zinc-900/50">
@@ -256,16 +257,56 @@ export default function EventManager({ initialEvents }: { initialEvents: Event[]
                   </td>
                 </tr>
               ))}
-              {events.length === 0 && (
-                <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center text-zinc-500">
-                    No events found. Click "Add Event" to create one.
-                  </td>
-                </tr>
-              )}
             </tbody>
           </table>
         </div>
+
+        {/* Mobile Card View */}
+        <div className="md:hidden divide-y divide-zinc-800">
+          {events.map((event) => (
+            <div key={event.id} className="p-4 space-y-3">
+              <div className="flex justify-between items-start">
+                <div>
+                  <div className="font-bold text-lg">{event.name}</div>
+                  <div className="text-blue-500 text-sm font-medium">{event.date}</div>
+                </div>
+                <div className="flex gap-1">
+                  <button
+                    onClick={() => handleEdit(event)}
+                    className="p-2 text-zinc-400 hover:text-blue-500 transition-colors"
+                  >
+                    <Pencil size={18} />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(event.id)}
+                    className="p-2 text-zinc-400 hover:text-red-500 transition-colors"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
+              </div>
+              <div className="flex gap-3 text-sm">
+                <div className="bg-zinc-800 px-2 py-1 rounded text-zinc-300">
+                  <span className="text-zinc-500 mr-1">Age:</span> {event.age}
+                </div>
+                <div className="bg-zinc-800 px-2 py-1 rounded text-zinc-300">
+                  <span className="text-zinc-500 mr-1">Price:</span> {event.price}
+                </div>
+              </div>
+              {event.description && (
+                <div className="text-sm text-zinc-400 line-clamp-2">
+                  {event.description}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {events.length === 0 && (
+          <div className="px-6 py-12 text-center text-zinc-500">
+            No events found. Click "Add Event" to create one.
+          </div>
+        )}
       </div>
     </div>
   );
