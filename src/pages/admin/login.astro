@@ -1,0 +1,80 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+let error = '';
+
+if (Astro.request.method === 'POST') {
+  try {
+    const data = await Astro.request.formData();
+    const password = data.get('password');
+
+    if (password === import.meta.env.ADMIN_PASSWORD) {
+      Astro.cookies.set('admin_session', 'true', {
+        path: '/',
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+        maxAge: 60 * 60 * 24 * 7, // 1 week
+      });
+
+      return Astro.redirect('/admin');
+    } else {
+      error = 'Invalid password';
+    }
+  } catch (e) {
+    if (e instanceof Error) {
+      error = e.message;
+    }
+  }
+}
+
+// Redirect if already logged in
+if (Astro.cookies.get('admin_session')?.value === 'true') {
+  return Astro.redirect('/admin');
+}
+---
+
+<Layout title="Admin Login | HDVL">
+  <main class="min-h-screen flex items-center justify-center bg-zinc-950 px-4">
+    <div class="max-w-md w-full space-y-8 bg-zinc-900 p-8 rounded-xl border border-zinc-800 shadow-2xl">
+      <div>
+        <h2 class="mt-6 text-center text-3xl font-extrabold text-white">
+          Admin Access
+        </h2>
+        <p class="mt-2 text-center text-sm text-zinc-400">
+          Please enter the administrator password
+        </p>
+      </div>
+      <form class="mt-8 space-y-6" method="POST">
+        <div class="rounded-md shadow-sm -space-y-px">
+          <div>
+            <label for="password" class="sr-only">Password</label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              required
+              class="appearance-none rounded-lg relative block w-full px-3 py-3 border border-zinc-700 placeholder-zinc-500 text-white bg-zinc-800 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+              placeholder="Password"
+            />
+          </div>
+        </div>
+
+        {error && (
+          <div class="text-red-500 text-sm text-center bg-red-500/10 py-2 rounded-lg border border-red-500/20">
+            {error}
+          </div>
+        )}
+
+        <div>
+          <button
+            type="submit"
+            class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+          >
+            Sign in
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+</Layout>

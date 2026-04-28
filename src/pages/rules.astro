@@ -4,7 +4,7 @@ import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { PageHeader } from '../components/PageHeader';
 import { MapPin, Info, AlertTriangle } from "lucide-react";
-import { getVenues, siteConfig } from '../lib/keystatic';
+import { getVenues, siteConfig } from '../lib/db';
 
 const venues = await getVenues();
 ---

@@ -1,0 +1,39 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Admin Dashboard | HDVL">
+  <main class="min-h-screen bg-zinc-950 text-white p-8">
+    <div class="max-w-6xl mx-auto">
+      <header class="flex justify-between items-center mb-8 border-b border-zinc-800 pb-6">
+        <div>
+          <h1 class="text-3xl font-bold">Admin Dashboard</h1>
+          <p class="text-zinc-400">Manage your events and venues</p>
+        </div>
+        <form action="/api/logout" method="POST">
+          <button type="submit" class="text-sm bg-zinc-800 hover:bg-zinc-700 px-4 py-2 rounded-lg transition-colors">
+            Logout
+          </button>
+        </form>
+      </header>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <a href="/admin/events" class="group bg-zinc-900 p-6 rounded-xl border border-zinc-800 hover:border-blue-500/50 transition-all">
+          <h2 class="text-xl font-semibold mb-2 flex items-center gap-2">
+            <span>Events</span>
+            <span class="text-zinc-500 group-hover:translate-x-1 transition-transform">→</span>
+          </h2>
+          <p class="text-zinc-400">Create, update, and delete volleyball events.</p>
+        </a>
+
+        <a href="/admin/venues" class="group bg-zinc-900 p-6 rounded-xl border border-zinc-800 hover:border-blue-500/50 transition-all">
+          <h2 class="text-xl font-semibold mb-2 flex items-center gap-2">
+            <span>Venues</span>
+            <span class="text-zinc-500 group-hover:translate-x-1 transition-transform">→</span>
+          </h2>
+          <p class="text-zinc-400">Manage venue locations and details.</p>
+        </a>
+      </div>
+    </div>
+  </main>
+</Layout>
