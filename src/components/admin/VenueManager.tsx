@@ -14,6 +14,11 @@ export default function VenueManager({ initialVenues }: { initialVenues: Venue[]
   const [isAdding, setIsAdding] = useState(false);
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<{ type: 'success' | 'error', message: string } | null>(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    address: '',
+    rules: ['']
+  });
 
   const showStatus = (type: 'success' | 'error', message: string) => {
     setStatus({ type, message });

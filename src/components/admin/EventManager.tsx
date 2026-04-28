@@ -16,6 +16,13 @@ export default function EventManager({ initialEvents }: { initialEvents: Event[]
   const [isAdding, setIsAdding] = useState(false);
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<{ type: 'success' | 'error', message: string } | null>(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    date: '',
+    age: '',
+    price: '',
+    description: ''
+  });
 
   const showStatus = (type: 'success' | 'error', message: string) => {
     setStatus({ type, message });

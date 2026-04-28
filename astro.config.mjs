@@ -5,6 +5,7 @@ import vercel from '@astrojs/vercel';
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://high-desert-volleyball.vercel.app',
   integrations: [react(), tailwind()],
   output: 'server',
   adapter: vercel(),

@@ -3,6 +3,10 @@ import { defineMiddleware } from 'astro:middleware';
 export const onRequest = defineMiddleware(async (context, next) => {
   const { url, cookies, redirect } = context;
 
+  if (!url) {
+    return next();
+  }
+
   // Only protect routes starting with /admin
   if (url.pathname.startsWith('/admin')) {
     // Allow access to the login page

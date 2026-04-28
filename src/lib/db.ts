@@ -65,10 +65,20 @@ export async function getVenues() {
   try {
     const result = await turso.execute('SELECT * FROM venues ORDER BY name ASC');
     // Parse rules string back to array if needed (SQLite doesn't have array type)
-    return result.rows.map((row: any) => ({
-      ...row,
-      rules: typeof row.rules === 'string' ? JSON.parse(row.rules) : row.rules
-    }));
+    return result.rows.map((row: any) => {
+      let rules = row.rules;
+      if (typeof rules === 'string') {
+        try {
+          rules = JSON.parse(rules);
+        } catch (e) {
+          rules = [];
+        }
+      }
+      return {
+        ...row,
+        rules: Array.isArray(rules) ? rules : []
+      };
+    });
   } catch (error) {
     console.error('Error fetching venues:', error);
     return [];
