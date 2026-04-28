@@ -54,9 +54,7 @@ export function Footer({ siteConfig }: { siteConfig: SiteConfig }) {
       <div className="max-w-7xl mx-auto mt-16 pt-8 border-t border-gray-900 flex flex-col items-center gap-6 text-gray-600 text-[10px] text-center uppercase tracking-widest font-bold">
         <p>&copy; 2026 {siteConfig.name}. All Rights Reserved.</p>
         <a 
-          href="/keystatic" 
-          target="_blank" 
-          rel="noopener noreferrer" 
+          href="/admin" 
           className="hover:text-gray-400 transition-colors opacity-50"
         >
           Admin
