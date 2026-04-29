@@ -49,7 +49,7 @@ export function Navbar({ siteConfig }: { siteConfig: SiteConfig }) {
 
   const infoLinks = [
     { name: "Registration Guide", href: "/register-guide" },
-    { name: "Site Rules", href: "/rules" },
+    { name: "Venues", href: "/venues" },
     { name: "Code of Conduct", href: "/conduct" },
   ];
 

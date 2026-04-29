@@ -33,7 +33,7 @@ export function Footer({ siteConfig }: { siteConfig: SiteConfig }) {
           <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-gray-600">Resources</h3>
           <div className="flex flex-col gap-3">
             <a href="/register-guide" className="text-gray-400 hover:text-blue-500 transition-colors text-sm font-medium">Registration Guide</a>
-            <a href="/rules" className="text-gray-400 hover:text-blue-500 transition-colors text-sm font-medium">Site Rules</a>
+            <a href="/venues" className="text-gray-400 hover:text-blue-500 transition-colors text-sm font-medium">Venues</a>
             <a href="/conduct" className="text-gray-400 hover:text-blue-500 transition-colors text-sm font-medium">Code of Conduct</a>
           </div>
         </div>
