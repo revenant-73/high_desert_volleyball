@@ -1,5 +1,23 @@
 # HDVL Site Recommendations
 
+## Visual Upgrade Roadmap
+
+Recommended direction: make the site feel like a polished regional tournament operator for coaches, parents, players, and administrators. Preserve High Desert Volleyball League as the public brand, keep the dark foundation and HDVL blue, and use visual polish to improve scanning and trust instead of adding decoration for its own sake.
+
+Recommended work:
+
+- Refresh the homepage hero with visible HDVL branding, a direct league-forward headline, useful quick facts, clearer CTAs, and integrated real volleyball media.
+- Move events higher in the page hierarchy and treat them as the primary public product.
+- Redesign event cards so date, status, format, venues, price, registration, and live schedule actions are easier to scan.
+- Add event format tabs or filters for All, Featured, 1-Day, and 2-Day views.
+- Strengthen the color system by keeping HDVL blue as the primary action color and adding limited white, zinc, and amber accents for hierarchy and trust signals.
+- Use real volleyball imagery more intentionally with consistent crops, treatments, and fallbacks.
+- Polish navigation and mobile scanning so Events, Registration Guide, and Venues are quick to reach.
+- Upgrade secondary pages, especially Registration Guide and Venues, into clearer workflow and facility-reference pages.
+- Surface trust signals more clearly, including JVA sanctioning, Treasure Valley focus, venue network, and clear contact paths.
+
+Current visual focus: hero refresh.
+
 ## Priority 1: Admin Security and Account Lifecycle
 
 Status: complete.
