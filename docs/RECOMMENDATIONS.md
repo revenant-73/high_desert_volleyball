@@ -26,15 +26,21 @@ Recommended fields:
 - `start_date`
 - `end_date`
 - `registration_url`
+- `schedule_url`
 - `status`
 - `division`
 - `venue_id`
+- `tournament_format`
+- `featured`
+- `featured_order`
 
 Implementation notes:
 
 - Preserve the original display fields while structured fields are adopted.
 - Backfill `start_date`, `end_date`, and `division` from existing event text where possible.
 - Use `venue_id` to show venue names and addresses on public event cards.
+- Use `tournament_format` to separate 1-day and 2-day tournaments on the public schedule.
+- Use `featured` and `featured_order` to spotlight the larger HDVL-hosted events.
 
 ## Priority 3: Safer Event and Venue Deletes
 
@@ -42,14 +48,16 @@ Replace browser confirmation dialogs with explicit confirmation modals that show
 
 ## Priority 4: Registration Improvements
 
-Status: partially complete.
+Status: complete.
 
 Add event-specific registration links and calls to action. The public flow should move from schedule card to exact registration action without requiring coaches to infer the next step from the general guide.
 
 Implementation notes:
 
 - Admins can now store `registration_url` per event.
+- Admins can now store `schedule_url` per event.
 - Public event cards show a direct registration CTA when registration is open and a URL is present.
+- Public event cards show a live schedule CTA when a schedule URL is present.
 
 ## Priority 5: Event Detail Pages
 
@@ -57,13 +65,13 @@ Create dedicated event pages with dates, divisions, price, venue, registration l
 
 ## Priority 6: Link Events to Venues
 
-Status: partially complete.
+Status: complete for schedule cards.
 
 Connect events to venue records so event pages and schedule cards can automatically show address, map links, and site-specific rules.
 
 Implementation notes:
 
-- Admins can assign a venue to each event.
+- Admins can assign one or more venues to each event.
 - Public event cards now show assigned venue names and addresses.
 - Event detail pages should use the same relationship once they exist.
 

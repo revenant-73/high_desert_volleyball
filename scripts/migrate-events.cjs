@@ -101,6 +101,31 @@ async function ensureStructuredEventColumns(db) {
   await db.execute('CREATE INDEX IF NOT EXISTS idx_events_start_date ON events(start_date)');
   await db.execute('CREATE INDEX IF NOT EXISTS idx_events_status ON events(status)');
   await db.execute('CREATE INDEX IF NOT EXISTS idx_events_venue_id ON events(venue_id)');
+  await db.execute('CREATE INDEX IF NOT EXISTS idx_events_tournament_format ON events(tournament_format)');
+  await db.execute('CREATE INDEX IF NOT EXISTS idx_events_featured ON events(featured, featured_order)');
+}
+
+async function ensureEventVenues(db) {
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS event_venues (
+      event_id INTEGER NOT NULL,
+      venue_id INTEGER NOT NULL,
+      sort_order INTEGER NOT NULL DEFAULT 0,
+      PRIMARY KEY (event_id, venue_id),
+      FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE,
+      FOREIGN KEY (venue_id) REFERENCES venues(id) ON DELETE CASCADE
+    )
+  `);
+
+  await db.execute('CREATE INDEX IF NOT EXISTS idx_event_venues_event_id ON event_venues(event_id)');
+  await db.execute('CREATE INDEX IF NOT EXISTS idx_event_venues_venue_id ON event_venues(venue_id)');
+
+  await db.execute(`
+    INSERT OR IGNORE INTO event_venues (event_id, venue_id, sort_order)
+    SELECT id, venue_id, 0
+    FROM events
+    WHERE venue_id IS NOT NULL
+  `);
 }
 
 async function backfillStructuredDates(db) {
@@ -125,6 +150,15 @@ async function backfillStructuredDates(db) {
       args: [startDate, endDate, row.age || null, row.id],
     });
   }
+
+  await db.execute(`
+    UPDATE events
+    SET tournament_format = 'one_day'
+    WHERE start_date IS NOT NULL
+      AND end_date IS NOT NULL
+      AND start_date = end_date
+      AND tournament_format = 'two_day'
+  `);
 }
 
 (async () => {
@@ -136,6 +170,7 @@ async function backfillStructuredDates(db) {
   });
 
   await ensureStructuredEventColumns(db);
+  await ensureEventVenues(db);
   await backfillStructuredDates(db);
 
   console.log('Structured event migration applied.');

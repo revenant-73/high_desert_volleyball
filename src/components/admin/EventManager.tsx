@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
-import { Pencil, Trash2, Plus, X, Save } from 'lucide-react';
+import { Pencil, Trash2, Plus, X, Save, Star } from 'lucide-react';
 import { sortEventsByStartDate } from '@/lib/eventSorting';
 
 type EventStatus = 'planned' | 'registration_open' | 'registration_closed' | 'canceled';
+type TournamentFormat = 'one_day' | 'two_day';
+
+interface EventVenue {
+  id: number;
+  name: string;
+  address: string;
+}
 
 interface Event {
   id: number;
@@ -15,11 +22,17 @@ interface Event {
   start_date?: string | null;
   end_date?: string | null;
   registration_url?: string | null;
+  schedule_url?: string | null;
   status?: EventStatus;
   division?: string | null;
   venue_id?: number | null;
   venue_name?: string | null;
   venue_address?: string | null;
+  venues?: EventVenue[];
+  venue_ids?: number[];
+  tournament_format?: TournamentFormat;
+  featured?: number | boolean;
+  featured_order?: number | null;
 }
 
 interface Venue {
@@ -37,9 +50,13 @@ interface FormData {
   start_date: string;
   end_date: string;
   registration_url: string;
+  schedule_url: string;
   status: EventStatus;
   division: string;
-  venue_id: string;
+  venue_ids: string[];
+  tournament_format: TournamentFormat;
+  featured: boolean;
+  featured_order: string;
 }
 
 const statusLabels: Record<EventStatus, string> = {
@@ -56,6 +73,11 @@ const statusClasses: Record<EventStatus, string> = {
   canceled: 'bg-red-500/10 text-red-300 border-red-500/20',
 };
 
+const formatLabels: Record<TournamentFormat, string> = {
+  one_day: '1-Day',
+  two_day: '2-Day',
+};
+
 const emptyFormData: FormData = {
   name: '',
   date: '',
@@ -65,10 +87,30 @@ const emptyFormData: FormData = {
   start_date: '',
   end_date: '',
   registration_url: '',
+  schedule_url: '',
   status: 'planned',
   division: '',
-  venue_id: '',
+  venue_ids: [],
+  tournament_format: 'two_day',
+  featured: false,
+  featured_order: '',
 };
+
+function isFeatured(event: Event) {
+  return event.featured === true || event.featured === 1;
+}
+
+function eventVenueIds(event: Event) {
+  if (event.venue_ids?.length) {
+    return event.venue_ids.map(String);
+  }
+
+  if (event.venues?.length) {
+    return event.venues.map((venue) => String(venue.id));
+  }
+
+  return event.venue_id ? [String(event.venue_id)] : [];
+}
 
 function eventToFormData(event: Event): FormData {
   return {
@@ -80,9 +122,13 @@ function eventToFormData(event: Event): FormData {
     start_date: event.start_date || '',
     end_date: event.end_date || '',
     registration_url: event.registration_url || '',
+    schedule_url: event.schedule_url || '',
     status: event.status || 'planned',
     division: event.division || event.age,
-    venue_id: event.venue_id ? String(event.venue_id) : '',
+    venue_ids: eventVenueIds(event),
+    tournament_format: event.tournament_format || 'two_day',
+    featured: isFeatured(event),
+    featured_order: event.featured_order ? String(event.featured_order) : '',
   };
 }
 
@@ -95,11 +141,23 @@ function toSubmissionData(formData: FormData) {
     price: formData.price.trim(),
     description: formData.description.trim(),
     registration_url: formData.registration_url.trim() || null,
+    schedule_url: formData.schedule_url.trim() || null,
     start_date: formData.start_date || null,
     end_date: formData.end_date || null,
     division: formData.division.trim() || formData.age.trim(),
-    venue_id: formData.venue_id || null,
+    venue_id: formData.venue_ids[0] || null,
+    venue_ids: formData.venue_ids,
+    featured: formData.featured,
+    featured_order: formData.featured_order || null,
   };
+}
+
+function venueSummary(event: Event) {
+  if (event.venues?.length) {
+    return event.venues.map((venue) => venue.name).join(', ');
+  }
+
+  return event.venue_name || 'Unassigned';
 }
 
 export default function EventManager({ initialEvents, venues }: { initialEvents: Event[], venues: Venue[] }) {
@@ -116,12 +174,29 @@ export default function EventManager({ initialEvents, venues }: { initialEvents:
   };
 
   const withVenueDetails = (event: Event): Event => {
-    const venue = venues.find((venue) => venue.id === event.venue_id);
-    return {
-      ...event,
-      venue_name: venue?.name || event.venue_name || null,
-      venue_address: venue?.address || event.venue_address || null,
-    };
+    const selectedVenues = event.venue_ids
+      ?.map((venueId) => venues.find((venue) => venue.id === venueId))
+      .filter((venue): venue is Venue => Boolean(venue));
+
+    if (selectedVenues?.length) {
+      return {
+        ...event,
+        venues: selectedVenues,
+        venue_name: selectedVenues.map((venue) => venue.name).join(', '),
+        venue_address: selectedVenues.length === 1 ? selectedVenues[0].address : null,
+      };
+    }
+
+    return event;
+  };
+
+  const handleVenueToggle = (venueId: string) => {
+    setFormData((current) => ({
+      ...current,
+      venue_ids: current.venue_ids.includes(venueId)
+        ? current.venue_ids.filter((id) => id !== venueId)
+        : [...current.venue_ids, venueId],
+    }));
   };
 
   const handleEdit = (event: Event) => {
@@ -226,7 +301,7 @@ export default function EventManager({ initialEvents, venues }: { initialEvents:
               <X size={20} />
             </button>
           </div>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="text-sm text-zinc-400">Event Name</label>
@@ -268,6 +343,30 @@ export default function EventManager({ initialEvents, venues }: { initialEvents:
                 />
               </div>
               <div className="space-y-2">
+                <label className="text-sm text-zinc-400">Tournament Format</label>
+                <select
+                  value={formData.tournament_format}
+                  onChange={e => setFormData({ ...formData, tournament_format: e.target.value as TournamentFormat })}
+                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="one_day">1-Day Tournament</option>
+                  <option value="two_day">2-Day Tournament</option>
+                </select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm text-zinc-400">Status</label>
+                <select
+                  value={formData.status}
+                  onChange={e => setFormData({ ...formData, status: e.target.value as EventStatus })}
+                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="planned">Planned</option>
+                  <option value="registration_open">Registration Open</option>
+                  <option value="registration_closed">Registration Closed</option>
+                  <option value="canceled">Canceled</option>
+                </select>
+              </div>
+              <div className="space-y-2">
                 <label className="text-sm text-zinc-400">Age Groups</label>
                 <input
                   type="text"
@@ -300,30 +399,26 @@ export default function EventManager({ initialEvents, venues }: { initialEvents:
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm text-zinc-400">Status</label>
-                <select
-                  value={formData.status}
-                  onChange={e => setFormData({ ...formData, status: e.target.value as EventStatus })}
+                <label className="text-sm text-zinc-400">Featured Order</label>
+                <input
+                  type="number"
+                  min="1"
+                  value={formData.featured_order}
+                  onChange={e => setFormData({ ...formData, featured_order: e.target.value })}
                   className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="planned">Planned</option>
-                  <option value="registration_open">Registration Open</option>
-                  <option value="registration_closed">Registration Closed</option>
-                  <option value="canceled">Canceled</option>
-                </select>
+                  placeholder="1, 2, or 3"
+                />
               </div>
-              <div className="space-y-2">
-                <label className="text-sm text-zinc-400">Venue</label>
-                <select
-                  value={formData.venue_id}
-                  onChange={e => setFormData({ ...formData, venue_id: e.target.value })}
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">No venue assigned</option>
-                  {venues.map((venue) => (
-                    <option key={venue.id} value={venue.id}>{venue.name}</option>
-                  ))}
-                </select>
+              <div className="space-y-2 md:col-span-2">
+                <label className="inline-flex items-center gap-3 rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-3 text-sm text-zinc-200">
+                  <input
+                    type="checkbox"
+                    checked={formData.featured}
+                    onChange={e => setFormData({ ...formData, featured: e.target.checked })}
+                    className="h-4 w-4 rounded border-zinc-600 bg-zinc-900 text-blue-600 focus:ring-blue-500"
+                  />
+                  Feature this event on the public site
+                </label>
               </div>
               <div className="space-y-2 md:col-span-2">
                 <label className="text-sm text-zinc-400">Registration URL</label>
@@ -335,7 +430,45 @@ export default function EventManager({ initialEvents, venues }: { initialEvents:
                   placeholder="https://tm2sign.com/..."
                 />
               </div>
+              <div className="space-y-2 md:col-span-2">
+                <label className="text-sm text-zinc-400">Live Schedule URL</label>
+                <input
+                  type="url"
+                  value={formData.schedule_url}
+                  onChange={e => setFormData({ ...formData, schedule_url: e.target.value })}
+                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="https://..."
+                />
+              </div>
             </div>
+
+            <fieldset className="space-y-3 rounded-xl border border-zinc-800 bg-zinc-950/40 p-4">
+              <legend className="px-1 text-sm font-medium text-zinc-300">Venues</legend>
+              {venues.length === 0 ? (
+                <p className="text-sm text-zinc-500">Add venues before assigning them to events.</p>
+              ) : (
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                  {venues.map((venue) => {
+                    const venueId = String(venue.id);
+                    return (
+                      <label key={venue.id} className="flex items-start gap-3 rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-3 text-sm">
+                        <input
+                          type="checkbox"
+                          checked={formData.venue_ids.includes(venueId)}
+                          onChange={() => handleVenueToggle(venueId)}
+                          className="mt-1 h-4 w-4 rounded border-zinc-600 bg-zinc-900 text-blue-600 focus:ring-blue-500"
+                        />
+                        <span>
+                          <span className="block font-medium text-zinc-200">{venue.name}</span>
+                          <span className="block text-xs text-zinc-500">{venue.address}</span>
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
+              )}
+            </fieldset>
+
             <div className="space-y-2">
               <label className="text-sm text-zinc-400">Description</label>
               <textarea
@@ -366,15 +499,16 @@ export default function EventManager({ initialEvents, venues }: { initialEvents:
       )}
 
       <div className="bg-zinc-900 rounded-xl border border-zinc-800 overflow-hidden">
-        <div className="hidden lg:block overflow-x-auto">
+        <div className="hidden xl:block overflow-x-auto">
           <table className="w-full text-left">
             <thead>
               <tr className="border-b border-zinc-800 bg-zinc-900/50">
                 <th className="px-5 py-4 text-sm font-medium text-zinc-400">Name</th>
                 <th className="px-5 py-4 text-sm font-medium text-zinc-400">Date</th>
+                <th className="px-5 py-4 text-sm font-medium text-zinc-400">Format</th>
                 <th className="px-5 py-4 text-sm font-medium text-zinc-400">Division</th>
                 <th className="px-5 py-4 text-sm font-medium text-zinc-400">Status</th>
-                <th className="px-5 py-4 text-sm font-medium text-zinc-400">Venue</th>
+                <th className="px-5 py-4 text-sm font-medium text-zinc-400">Venues</th>
                 <th className="px-5 py-4 text-sm font-medium text-zinc-400">Price</th>
                 <th className="px-5 py-4 text-sm font-medium text-zinc-400 text-right">Actions</th>
               </tr>
@@ -383,16 +517,20 @@ export default function EventManager({ initialEvents, venues }: { initialEvents:
               {events.map((event) => (
                 <tr key={event.id} className="hover:bg-zinc-800/50 transition-colors">
                   <td className="px-5 py-4">
-                    <div className="font-medium">{event.name}</div>
+                    <div className="flex items-center gap-2 font-medium">
+                      {isFeatured(event) && <Star size={16} className="fill-blue-400 text-blue-400" />}
+                      {event.name}
+                    </div>
                   </td>
                   <td className="px-5 py-4 text-zinc-400">{event.date}</td>
+                  <td className="px-5 py-4 text-zinc-400">{formatLabels[event.tournament_format || 'two_day']}</td>
                   <td className="px-5 py-4 text-zinc-400">{event.division || event.age}</td>
                   <td className="px-5 py-4">
                     <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-medium ${statusClasses[event.status || 'planned']}`}>
                       {statusLabels[event.status || 'planned']}
                     </span>
                   </td>
-                  <td className="px-5 py-4 text-zinc-400">{event.venue_name || 'Unassigned'}</td>
+                  <td className="px-5 py-4 text-zinc-400">{venueSummary(event)}</td>
                   <td className="px-5 py-4 text-zinc-400">{event.price}</td>
                   <td className="px-5 py-4 text-right">
                     <div className="flex justify-end gap-2">
@@ -418,14 +556,17 @@ export default function EventManager({ initialEvents, venues }: { initialEvents:
           </table>
         </div>
 
-        <div className="lg:hidden divide-y divide-zinc-800">
+        <div className="xl:hidden divide-y divide-zinc-800">
           {events.map((event) => (
             <div key={event.id} className="p-4 space-y-3">
               <div className="flex justify-between items-start gap-3">
                 <div>
-                  <div className="font-bold text-lg">{event.name}</div>
+                  <div className="flex items-center gap-2 font-bold text-lg">
+                    {isFeatured(event) && <Star size={16} className="fill-blue-400 text-blue-400" />}
+                    {event.name}
+                  </div>
                   <div className="text-blue-500 text-sm font-medium">{event.date}</div>
-                  <div className="text-zinc-500 text-xs">{event.venue_name || 'Unassigned venue'}</div>
+                  <div className="text-zinc-500 text-xs">{venueSummary(event)}</div>
                 </div>
                 <div className="flex gap-1">
                   <button
@@ -445,6 +586,9 @@ export default function EventManager({ initialEvents, venues }: { initialEvents:
                 </div>
               </div>
               <div className="flex flex-wrap gap-2 text-sm">
+                <div className="bg-zinc-800 px-2 py-1 rounded text-zinc-300">
+                  <span className="text-zinc-500 mr-1">Format:</span> {formatLabels[event.tournament_format || 'two_day']}
+                </div>
                 <div className="bg-zinc-800 px-2 py-1 rounded text-zinc-300">
                   <span className="text-zinc-500 mr-1">Division:</span> {event.division || event.age}
                 </div>
