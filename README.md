@@ -60,3 +60,16 @@ Create or update an admin account by setting `ADMIN_EMAIL`, `ADMIN_ACCOUNT_PASSW
 ```bash
 npm run admin:upsert
 ```
+
+Optional admin account variables:
+
+- `ADMIN_ROLE=admin`
+- `ADMIN_ROLE=super_admin`
+
+Super admins can manage admin accounts from `/admin/admins`. The admin tools support creating accounts, resetting passwords, deactivating/reactivating accounts, and deleting accounts. Each admin can change their own password from `/admin/password`.
+
+The migration is additive and idempotent. It creates the auth/session/login-attempt tables, adds admin lifecycle columns when missing, and keeps Loren and Steve marked as active super admins.
+
+## Recommendations
+
+Current improvement recommendations are tracked in [docs/RECOMMENDATIONS.md](docs/RECOMMENDATIONS.md).

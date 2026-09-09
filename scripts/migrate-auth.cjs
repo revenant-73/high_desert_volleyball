@@ -33,20 +33,52 @@ function splitSql(sql) {
 
 async function ensureAdminRoles(db) {
   const tableInfo = await db.execute('PRAGMA table_info(admins)');
-  const hasRole = tableInfo.rows.some((column) => column.name === 'role');
+  const columns = new Set(tableInfo.rows.map((column) => column.name));
 
-  if (!hasRole) {
+  if (!columns.has('role')) {
     await db.execute("ALTER TABLE admins ADD COLUMN role TEXT NOT NULL DEFAULT 'admin'");
+  }
+
+  if (!columns.has('active')) {
+    await db.execute("ALTER TABLE admins ADD COLUMN active INTEGER NOT NULL DEFAULT 1");
+  }
+
+  if (!columns.has('password_updated_at')) {
+    await db.execute("ALTER TABLE admins ADD COLUMN password_updated_at DATETIME");
   }
 
   await db.execute({
     sql: `
       UPDATE admins
-      SET role = 'super_admin', updated_at = CURRENT_TIMESTAMP
+      SET role = 'super_admin',
+        active = 1,
+        updated_at = CURRENT_TIMESTAMP
       WHERE lower(email) IN (?, ?)
     `,
     args: ['loren@tualatinvalleyvb.com', 'steve@risevolleyballacademy.net'],
   });
+}
+
+async function ensureLoginAttemptTable(db) {
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS admin_login_attempts (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      email TEXT NOT NULL,
+      ip_address TEXT,
+      success INTEGER NOT NULL DEFAULT 0,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  await db.execute(`
+    CREATE INDEX IF NOT EXISTS idx_admin_login_attempts_email_created_at
+    ON admin_login_attempts(lower(email), created_at)
+  `);
+
+  await db.execute(`
+    CREATE INDEX IF NOT EXISTS idx_admin_login_attempts_ip_created_at
+    ON admin_login_attempts(ip_address, created_at)
+  `);
 }
 
 (async () => {
@@ -64,6 +96,7 @@ async function ensureAdminRoles(db) {
   }
 
   await ensureAdminRoles(db);
+  await ensureLoginAttemptTable(db);
 
   console.log('Admin auth migration applied.');
 })().catch((error) => {

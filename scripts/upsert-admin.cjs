@@ -58,12 +58,14 @@ async function hashPassword(password) {
   const passwordHash = await hashPassword(password);
   await db.execute({
     sql: `
-      INSERT INTO admins (email, password_hash, name, role)
-      VALUES (?, ?, ?, ?)
+      INSERT INTO admins (email, password_hash, name, role, active, password_updated_at)
+      VALUES (?, ?, ?, ?, 1, CURRENT_TIMESTAMP)
       ON CONFLICT(email) DO UPDATE SET
         password_hash = excluded.password_hash,
         name = excluded.name,
         role = excluded.role,
+        active = 1,
+        password_updated_at = CURRENT_TIMESTAMP,
         updated_at = CURRENT_TIMESTAMP
     `,
     args: [email, passwordHash, name, role],

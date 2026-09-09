@@ -38,6 +38,14 @@ const isSuperAdmin = admin?.role === 'super_admin';
           <p class="text-zinc-400">Manage venue locations and details.</p>
         </a>
 
+        <a href="/admin/password" class="group bg-zinc-900 p-6 rounded-xl border border-zinc-800 hover:border-blue-500/50 transition-all">
+          <h2 class="text-xl font-semibold mb-2 flex items-center gap-2">
+            <span>Password</span>
+            <span class="text-zinc-500 group-hover:translate-x-1 transition-transform">→</span>
+          </h2>
+          <p class="text-zinc-400">Change your own admin password.</p>
+        </a>
+
         {isSuperAdmin && (
           <a href="/admin/admins" class="group bg-zinc-900 p-6 rounded-xl border border-zinc-800 hover:border-blue-500/50 transition-all">
             <h2 class="text-xl font-semibold mb-2 flex items-center gap-2">

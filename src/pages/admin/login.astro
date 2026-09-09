@@ -1,8 +1,19 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { authenticateAdmin, getAdminFromCookies, setAdminSessionCookie } from '../../lib/auth';
+import { AdminLoginRateLimitError, authenticateAdmin, getAdminFromCookies, setAdminSessionCookie } from '../../lib/auth';
 
 let error = '';
+let success = '';
+
+if (Astro.url.searchParams.get('passwordChanged') === '1') {
+  success = 'Password updated. Sign in with your new password.';
+}
+
+function getClientIp(request: Request) {
+  return request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+    || request.headers.get('x-real-ip')
+    || null;
+}
 
 if (await getAdminFromCookies(Astro.cookies)) {
   return Astro.redirect('/admin');
@@ -13,7 +24,9 @@ if (Astro.request.method === 'POST') {
     const data = await Astro.request.formData();
     const email = data.get('email');
     const password = data.get('password');
-    const session = await authenticateAdmin(email, password);
+    const session = await authenticateAdmin(email, password, {
+      ipAddress: getClientIp(Astro.request),
+    });
 
     if (session) {
       setAdminSessionCookie(Astro.cookies, session.token, session.maxAge);
@@ -23,7 +36,9 @@ if (Astro.request.method === 'POST') {
     }
   } catch (e) {
     console.error('Admin login failed:', e);
-    error = 'Unable to sign in right now';
+    error = e instanceof AdminLoginRateLimitError
+      ? e.message
+      : 'Unable to sign in right now';
   }
 }
 ---
@@ -70,6 +85,12 @@ if (Astro.request.method === 'POST') {
         {error && (
           <div class="text-red-500 text-sm text-center bg-red-500/10 py-2 rounded-lg border border-red-500/20">
             {error}
+          </div>
+        )}
+
+        {success && (
+          <div class="text-emerald-300 text-sm text-center bg-emerald-500/10 py-2 rounded-lg border border-emerald-500/20">
+            {success}
           </div>
         )}
 
