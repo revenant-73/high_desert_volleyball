@@ -40,9 +40,14 @@ async function hashPassword(password) {
   const email = requireEnv('ADMIN_EMAIL').trim().toLowerCase();
   const password = requireEnv('ADMIN_ACCOUNT_PASSWORD');
   const name = process.env.ADMIN_NAME || null;
+  const role = process.env.ADMIN_ROLE || 'admin';
 
   if (password.length < 12) {
     throw new Error('ADMIN_ACCOUNT_PASSWORD must be at least 12 characters.');
+  }
+
+  if (!['admin', 'super_admin'].includes(role)) {
+    throw new Error('ADMIN_ROLE must be admin or super_admin.');
   }
 
   const db = createClient({
@@ -53,14 +58,15 @@ async function hashPassword(password) {
   const passwordHash = await hashPassword(password);
   await db.execute({
     sql: `
-      INSERT INTO admins (email, password_hash, name)
-      VALUES (?, ?, ?)
+      INSERT INTO admins (email, password_hash, name, role)
+      VALUES (?, ?, ?, ?)
       ON CONFLICT(email) DO UPDATE SET
         password_hash = excluded.password_hash,
         name = excluded.name,
+        role = excluded.role,
         updated_at = CURRENT_TIMESTAMP
     `,
-    args: [email, passwordHash, name],
+    args: [email, passwordHash, name, role],
   });
 
   console.log(`Admin account ready for ${email}.`);

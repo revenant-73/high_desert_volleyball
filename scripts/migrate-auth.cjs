@@ -31,6 +31,24 @@ function splitSql(sql) {
     .filter(Boolean);
 }
 
+async function ensureAdminRoles(db) {
+  const tableInfo = await db.execute('PRAGMA table_info(admins)');
+  const hasRole = tableInfo.rows.some((column) => column.name === 'role');
+
+  if (!hasRole) {
+    await db.execute("ALTER TABLE admins ADD COLUMN role TEXT NOT NULL DEFAULT 'admin'");
+  }
+
+  await db.execute({
+    sql: `
+      UPDATE admins
+      SET role = 'super_admin', updated_at = CURRENT_TIMESTAMP
+      WHERE lower(email) IN (?, ?)
+    `,
+    args: ['loren@tualatinvalleyvb.com', 'steve@risevolleyballacademy.net'],
+  });
+}
+
 (async () => {
   loadEnv();
 
@@ -44,6 +62,8 @@ function splitSql(sql) {
   for (const statement of splitSql(sql)) {
     await db.execute(statement);
   }
+
+  await ensureAdminRoles(db);
 
   console.log('Admin auth migration applied.');
 })().catch((error) => {

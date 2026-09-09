@@ -1,5 +1,9 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import { getAdminFromCookies } from '../../lib/auth';
+
+const admin = await getAdminFromCookies(Astro.cookies);
+const isSuperAdmin = admin?.role === 'super_admin';
 ---
 
 <Layout title="Admin Dashboard | HDVL">
@@ -17,7 +21,7 @@ import Layout from '../../layouts/Layout.astro';
         </form>
       </header>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <a href="/admin/events" class="group bg-zinc-900 p-6 rounded-xl border border-zinc-800 hover:border-blue-500/50 transition-all">
           <h2 class="text-xl font-semibold mb-2 flex items-center gap-2">
             <span>Events</span>
@@ -33,6 +37,16 @@ import Layout from '../../layouts/Layout.astro';
           </h2>
           <p class="text-zinc-400">Manage venue locations and details.</p>
         </a>
+
+        {isSuperAdmin && (
+          <a href="/admin/admins" class="group bg-zinc-900 p-6 rounded-xl border border-zinc-800 hover:border-blue-500/50 transition-all">
+            <h2 class="text-xl font-semibold mb-2 flex items-center gap-2">
+              <span>Admins</span>
+              <span class="text-zinc-500 group-hover:translate-x-1 transition-transform">→</span>
+            </h2>
+            <p class="text-zinc-400">Add admin accounts and manage access.</p>
+          </a>
+        )}
       </div>
     </div>
   </main>
