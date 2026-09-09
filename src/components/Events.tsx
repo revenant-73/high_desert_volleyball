@@ -103,7 +103,7 @@ function EventCard({
   onToggle: (key: string) => void;
 }) {
   const status = event.status || 'planned';
-  const registrationOpen = status === 'registration_open' && event.registration_url;
+  const canRegister = Boolean(event.registration_url) && status !== 'registration_closed' && status !== 'canceled';
   const venues = eventVenues(event);
   const format = eventFormat(event);
 
@@ -205,7 +205,7 @@ function EventCard({
               )}
 
               <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                {registrationOpen ? (
+                {canRegister ? (
                   <a
                     href={event.registration_url || undefined}
                     target="_blank"
