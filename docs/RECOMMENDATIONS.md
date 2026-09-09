@@ -16,7 +16,7 @@ Recommended work:
 - Upgrade secondary pages, especially Registration Guide and Venues, into clearer workflow and facility-reference pages.
 - Surface trust signals more clearly, including JVA sanctioning, Treasure Valley focus, venue network, and clear contact paths.
 
-Current visual focus: hero refresh.
+Current visual focus: events section refresh. The schedule should use summary counts, All/Featured/1-Day/2-Day filters, compact scan-level cards, clear status/price/venue hierarchy, visible registration and live schedule actions, and expanded venue details for coaches and families who need more context.
 
 ## Priority 1: Admin Security and Account Lifecycle
 
