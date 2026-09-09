@@ -1,36 +1,30 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import { authenticateAdmin, getAdminFromCookies, setAdminSessionCookie } from '../../lib/auth';
 
 let error = '';
+
+if (await getAdminFromCookies(Astro.cookies)) {
+  return Astro.redirect('/admin');
+}
 
 if (Astro.request.method === 'POST') {
   try {
     const data = await Astro.request.formData();
+    const email = data.get('email');
     const password = data.get('password');
+    const session = await authenticateAdmin(email, password);
 
-    if (password === import.meta.env.ADMIN_PASSWORD) {
-      Astro.cookies.set('admin_session', 'true', {
-        path: '/',
-        httpOnly: true,
-        secure: true,
-        sameSite: 'strict',
-        maxAge: 60 * 60 * 24 * 7, // 1 week
-      });
-
+    if (session) {
+      setAdminSessionCookie(Astro.cookies, session.token, session.maxAge);
       return Astro.redirect('/admin');
     } else {
-      error = 'Invalid password';
+      error = 'Invalid email or password';
     }
   } catch (e) {
-    if (e instanceof Error) {
-      error = e.message;
-    }
+    console.error('Admin login failed:', e);
+    error = 'Unable to sign in right now';
   }
-}
-
-// Redirect if already logged in
-if (Astro.cookies.get('admin_session')?.value === 'true') {
-  return Astro.redirect('/admin');
 }
 ---
 
@@ -42,17 +36,30 @@ if (Astro.cookies.get('admin_session')?.value === 'true') {
           Admin Access
         </h2>
         <p class="mt-2 text-center text-sm text-zinc-400">
-          Please enter the administrator password
+          Sign in with your admin email and password
         </p>
       </div>
       <form class="mt-8 space-y-6" method="POST">
-        <div class="rounded-md shadow-sm -space-y-px">
+        <div class="space-y-4">
           <div>
-            <label for="password" class="sr-only">Password</label>
+            <label for="email" class="block text-sm font-medium text-zinc-300 mb-2">Email</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autocomplete="username"
+              required
+              class="appearance-none rounded-lg relative block w-full px-3 py-3 border border-zinc-700 placeholder-zinc-500 text-white bg-zinc-800 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+              placeholder="admin@example.com"
+            />
+          </div>
+          <div>
+            <label for="password" class="block text-sm font-medium text-zinc-300 mb-2">Password</label>
             <input
               id="password"
               name="password"
               type="password"
+              autocomplete="current-password"
               required
               class="appearance-none rounded-lg relative block w-full px-3 py-3 border border-zinc-700 placeholder-zinc-500 text-white bg-zinc-800 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
               placeholder="Password"

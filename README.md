@@ -44,3 +44,19 @@ npm run preview
 Copy `.env.example` to `.env` for local development and fill in the required values.
 
 Do not commit real secrets from `.env`.
+
+## Admin Accounts
+
+Admin access uses email/password accounts stored in Turso. Passwords are hashed before storage, and active sessions are stored as hashed tokens.
+
+Apply the auth tables:
+
+```bash
+npm run db:migrate:auth
+```
+
+Create or update an admin account by setting `ADMIN_EMAIL`, `ADMIN_ACCOUNT_PASSWORD`, and optionally `ADMIN_NAME` in `.env`, then run:
+
+```bash
+npm run admin:upsert
+```

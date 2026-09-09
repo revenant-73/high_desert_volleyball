@@ -1,4 +1,23 @@
 import { turso } from './turso';
+import { sortEventsByStartDate } from './eventSorting';
+
+export interface Event {
+  id: number;
+  created_at?: string;
+  name: string;
+  date: string;
+  age: string;
+  price: string;
+  description: string;
+}
+
+export interface Venue {
+  id: number;
+  created_at?: string;
+  name: string;
+  address: string;
+  rules: string[];
+}
 
 export const siteConfig = {
   name: "High Desert Volleyball League",
@@ -12,10 +31,26 @@ export const siteConfig = {
   },
 };
 
-export async function getEvents() {
+function parseVenue(row: any): Venue {
+  let rules = row.rules;
+  if (typeof rules === 'string') {
+    try {
+      rules = JSON.parse(rules);
+    } catch (e) {
+      rules = [];
+    }
+  }
+
+  return {
+    ...row,
+    rules: Array.isArray(rules) ? rules : [],
+  };
+}
+
+export async function getEvents(): Promise<Event[]> {
   try {
-    const result = await turso.execute('SELECT * FROM events ORDER BY date ASC');
-    return result.rows as any[];
+    const result = await turso.execute('SELECT * FROM events');
+    return sortEventsByStartDate(result.rows as unknown as Event[]);
   } catch (error) {
     console.error('Error fetching events:', error);
     return [];
@@ -24,11 +59,12 @@ export async function getEvents() {
 
 export async function createEvent(event: { name: string, date: string, age: string, price: string, description: string }) {
   try {
-    await turso.execute({
-      sql: 'INSERT INTO events (name, date, age, price, description) VALUES (?, ?, ?, ?, ?)',
+    const result = await turso.execute({
+      sql: 'INSERT INTO events (name, date, age, price, description) VALUES (?, ?, ?, ?, ?) RETURNING *',
       args: [event.name, event.date, event.age, event.price, event.description]
     });
-    return { success: true };
+
+    return { success: true, event: result.rows[0] as unknown as Event };
   } catch (error) {
     console.error('Error creating event:', error);
     return { success: false, error };
@@ -37,11 +73,16 @@ export async function createEvent(event: { name: string, date: string, age: stri
 
 export async function updateEvent(id: number, event: { name: string, date: string, age: string, price: string, description: string }) {
   try {
-    await turso.execute({
-      sql: 'UPDATE events SET name = ?, date = ?, age = ?, price = ?, description = ? WHERE id = ?',
+    const result = await turso.execute({
+      sql: 'UPDATE events SET name = ?, date = ?, age = ?, price = ?, description = ? WHERE id = ? RETURNING *',
       args: [event.name, event.date, event.age, event.price, event.description, id]
     });
-    return { success: true };
+
+    if (!result.rows[0]) {
+      return { success: false, error: new Error('Event not found') };
+    }
+
+    return { success: true, event: result.rows[0] as unknown as Event };
   } catch (error) {
     console.error('Error updating event:', error);
     return { success: false, error };
@@ -61,24 +102,10 @@ export async function deleteEvent(id: number) {
   }
 }
 
-export async function getVenues() {
+export async function getVenues(): Promise<Venue[]> {
   try {
     const result = await turso.execute('SELECT * FROM venues ORDER BY name ASC');
-    // Parse rules string back to array if needed (SQLite doesn't have array type)
-    return result.rows.map((row: any) => {
-      let rules = row.rules;
-      if (typeof rules === 'string') {
-        try {
-          rules = JSON.parse(rules);
-        } catch (e) {
-          rules = [];
-        }
-      }
-      return {
-        ...row,
-        rules: Array.isArray(rules) ? rules : []
-      };
-    });
+    return result.rows.map(parseVenue);
   } catch (error) {
     console.error('Error fetching venues:', error);
     return [];
@@ -87,11 +114,12 @@ export async function getVenues() {
 
 export async function createVenue(venue: { name: string, address: string, rules: string[] }) {
   try {
-    await turso.execute({
-      sql: 'INSERT INTO venues (name, address, rules) VALUES (?, ?, ?)',
+    const result = await turso.execute({
+      sql: 'INSERT INTO venues (name, address, rules) VALUES (?, ?, ?) RETURNING *',
       args: [venue.name, venue.address, JSON.stringify(venue.rules)]
     });
-    return { success: true };
+
+    return { success: true, venue: parseVenue(result.rows[0]) };
   } catch (error) {
     console.error('Error creating venue:', error);
     return { success: false, error };
@@ -100,11 +128,16 @@ export async function createVenue(venue: { name: string, address: string, rules:
 
 export async function updateVenue(id: number, venue: { name: string, address: string, rules: string[] }) {
   try {
-    await turso.execute({
-      sql: 'UPDATE venues SET name = ?, address = ?, rules = ? WHERE id = ?',
+    const result = await turso.execute({
+      sql: 'UPDATE venues SET name = ?, address = ?, rules = ? WHERE id = ? RETURNING *',
       args: [venue.name, venue.address, JSON.stringify(venue.rules), id]
     });
-    return { success: true };
+
+    if (!result.rows[0]) {
+      return { success: false, error: new Error('Venue not found') };
+    }
+
+    return { success: true, venue: parseVenue(result.rows[0]) };
   } catch (error) {
     console.error('Error updating venue:', error);
     return { success: false, error };

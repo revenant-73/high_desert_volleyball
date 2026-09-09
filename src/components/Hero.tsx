@@ -44,9 +44,12 @@ export function Hero({ siteConfig }: { siteConfig: SiteConfig }) {
               >
                 Register Your Team <ChevronRightIcon className="h-5 w-5" />
               </a>
-              <button className="inline-flex items-center justify-center gap-2 border-2 border-gray-800 text-white px-8 py-4 rounded-full font-bold text-base sm:text-lg hover:border-blue-500 hover:text-blue-500 transition-all active:scale-[0.98]">
+              <a
+                href="#about"
+                className="inline-flex items-center justify-center gap-2 border-2 border-gray-800 text-white px-8 py-4 rounded-full font-bold text-base sm:text-lg hover:border-blue-500 hover:text-blue-500 transition-all active:scale-[0.98]"
+              >
                 Learn More
-              </button>
+              </a>
             </div>
           </div>
 

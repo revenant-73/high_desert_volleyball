@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
+import { deleteAdminSession } from '../../lib/auth';
 
 export const POST: APIRoute = async ({ cookies, redirect }) => {
-  cookies.delete('admin_session', { path: '/' });
+  await deleteAdminSession(cookies);
   return redirect('/admin/login');
 };

@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Pencil, Trash2, Plus, X, Save } from 'lucide-react';
+import { sortEventsByStartDate } from '@/lib/eventSorting';
 
 interface Event {
   id: number;
+  created_at?: string;
   name: string;
   date: string;
   age: string;
@@ -11,7 +13,7 @@ interface Event {
 }
 
 export default function EventManager({ initialEvents }: { initialEvents: Event[] }) {
-  const [events, setEvents] = useState<Event[]>(initialEvents);
+  const [events, setEvents] = useState<Event[]>(sortEventsByStartDate(initialEvents));
   const [isEditing, setIsEditing] = useState<number | null>(null);
   const [isAdding, setIsAdding] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -89,11 +91,12 @@ export default function EventManager({ initialEvents }: { initialEvents: Event[]
 
       if (res.ok) {
         const result = await res.json();
+        const savedEvent = result.event as Event;
         if (isEditing) {
-          setEvents(events.map(e => e.id === isEditing ? { ...formData, id: isEditing } : e));
+          setEvents(sortEventsByStartDate(events.map(e => e.id === isEditing ? savedEvent : e)));
           showStatus('success', 'Event updated successfully');
         } else {
-          setEvents([...events, { ...formData, id: result.id }]);
+          setEvents(sortEventsByStartDate([...events, savedEvent]));
           showStatus('success', 'Event created successfully');
         }
         setIsEditing(null);

@@ -30,8 +30,22 @@ const venues = await getVenues();
 				</div>
 			</div>
 
-			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-				{venues.map((venue) => (
+			{venues.length === 0 ? (
+				<div class="rounded-3xl border border-gray-800 bg-gray-900/50 p-8 text-center">
+					<h2 class="text-2xl font-black text-white mb-3">Venue details coming soon</h2>
+					<p class="text-gray-400 max-w-2xl mx-auto leading-relaxed">
+						HDVL will post tournament facility locations and site-specific rules here as venues are confirmed.
+					</p>
+					<a
+						href={`mailto:${siteConfig.email}`}
+						class="mt-8 inline-flex items-center justify-center rounded-full bg-blue-600 px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-blue-700"
+					>
+						Contact HDVL
+					</a>
+				</div>
+			) : (
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+					{venues.map((venue) => (
 					<div className="bg-gray-900/50 backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-gray-800 hover:border-blue-900/50 transition-all group flex flex-col">
 						<div className="mb-6">
 							<div className="flex items-center justify-between mb-4">
@@ -69,8 +83,9 @@ const venues = await getVenues();
 							</ul>
 						</div>
 					</div>
-				))}
-			</div>
+					))}
+				</div>
+			)}
 		</div>
 		<Footer siteConfig={siteConfig} />
 	</main>

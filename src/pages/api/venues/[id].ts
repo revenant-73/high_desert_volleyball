@@ -1,9 +1,9 @@
 import type { APIRoute } from 'astro';
 import { updateVenue, deleteVenue } from '../../../lib/db';
+import { requireAdmin } from '../../../lib/auth';
 
 export const PUT: APIRoute = async ({ params, request, cookies }) => {
-  const session = cookies.get('admin_session');
-  if (!session || session.value !== 'true') {
+  if (!(await requireAdmin(cookies))) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
   }
 
@@ -17,7 +17,7 @@ export const PUT: APIRoute = async ({ params, request, cookies }) => {
     const result = await updateVenue(id, data);
     
     if (result.success) {
-      return new Response(JSON.stringify({ success: true }), { status: 200 });
+      return new Response(JSON.stringify({ success: true, venue: result.venue }), { status: 200 });
     } else {
       return new Response(JSON.stringify({ error: 'Failed to update venue' }), { status: 500 });
     }
@@ -27,8 +27,7 @@ export const PUT: APIRoute = async ({ params, request, cookies }) => {
 };
 
 export const DELETE: APIRoute = async ({ params, cookies }) => {
-  const session = cookies.get('admin_session');
-  if (!session || session.value !== 'true') {
+  if (!(await requireAdmin(cookies))) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
   }
 

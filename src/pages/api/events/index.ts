@@ -1,10 +1,9 @@
 import type { APIRoute } from 'astro';
 import { createEvent } from '../../../lib/db';
+import { requireAdmin } from '../../../lib/auth';
 
 export const POST: APIRoute = async ({ request, cookies }) => {
-  // Security check: only allow if authenticated
-  const session = cookies.get('admin_session');
-  if (!session || session.value !== 'true') {
+  if (!(await requireAdmin(cookies))) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
   }
 
@@ -13,7 +12,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     const result = await createEvent(data);
     
     if (result.success) {
-      return new Response(JSON.stringify({ success: true }), { status: 201 });
+      return new Response(JSON.stringify({ success: true, event: result.event }), { status: 201 });
     } else {
       return new Response(JSON.stringify({ error: 'Failed to create event' }), { status: 500 });
     }

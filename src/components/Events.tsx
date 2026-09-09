@@ -29,8 +29,16 @@ export function Events({ events }: { events: Event[] }) {
           </p>
         </div>
 
-        <div className="space-y-4 sm:space-y-6">
-          {events.map((event, index) => {
+        {events.length === 0 ? (
+          <div className="rounded-2xl border border-gray-800 bg-gray-950 px-6 py-10 text-center">
+            <h3 className="text-xl font-black text-white mb-3">Tournament schedule coming soon</h3>
+            <p className="text-sm sm:text-base text-gray-400 max-w-xl mx-auto">
+              Event dates and registration details will be posted here as soon as they are confirmed.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-4 sm:space-y-6">
+            {events.map((event, index) => {
             const isExpanded = expandedIndex === index;
             return (
               <div
@@ -98,8 +106,9 @@ export function Events({ events }: { events: Event[] }) {
                 </div>
               </div>
             );
-          })}
-        </div>
+            })}
+          </div>
+        )}
       </div>
     </section>
   );

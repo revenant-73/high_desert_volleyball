@@ -1,4 +1,5 @@
 import { defineMiddleware } from 'astro:middleware';
+import { getAdminFromCookies } from './lib/auth';
 
 export const onRequest = defineMiddleware(async (context, next) => {
   const { url, cookies, redirect } = context;
@@ -14,10 +15,8 @@ export const onRequest = defineMiddleware(async (context, next) => {
       return next();
     }
 
-    // Check for the session cookie
-    const session = cookies.get('admin_session');
-
-    if (!session || session.value !== 'true') {
+    const admin = await getAdminFromCookies(cookies);
+    if (!admin) {
       return redirect('/admin/login');
     }
   }

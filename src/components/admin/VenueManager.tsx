@@ -3,13 +3,18 @@ import { Pencil, Trash2, Plus, X, Save, GripVertical } from 'lucide-react';
 
 interface Venue {
   id: number;
+  created_at?: string;
   name: string;
   address: string;
   rules: string[];
 }
 
+function sortVenues(venues: Venue[]) {
+  return [...venues].sort((a, b) => a.name.localeCompare(b.name));
+}
+
 export default function VenueManager({ initialVenues }: { initialVenues: Venue[] }) {
-  const [venues, setVenues] = useState<Venue[]>(initialVenues);
+  const [venues, setVenues] = useState<Venue[]>(sortVenues(initialVenues));
   const [isEditing, setIsEditing] = useState<number | null>(null);
   const [isAdding, setIsAdding] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -102,11 +107,12 @@ export default function VenueManager({ initialVenues }: { initialVenues: Venue[]
 
       if (res.ok) {
         const result = await res.json();
+        const savedVenue = result.venue as Venue;
         if (isEditing) {
-          setVenues(venues.map(v => v.id === isEditing ? { ...submissionData, id: isEditing } : v));
+          setVenues(sortVenues(venues.map(v => v.id === isEditing ? savedVenue : v)));
           showStatus('success', 'Venue updated successfully');
         } else {
-          setVenues([...venues, { ...submissionData, id: result.id }]);
+          setVenues(sortVenues([...venues, savedVenue]));
           showStatus('success', 'Venue created successfully');
         }
         setIsEditing(null);
