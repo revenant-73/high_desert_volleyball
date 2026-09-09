@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Calendar, DollarSign, ChevronDown } from "lucide-react";
+import { Calendar, DollarSign, ChevronDown, ExternalLink, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+type EventStatus = 'planned' | 'registration_open' | 'registration_closed' | 'canceled';
 
 interface Event {
   name: string;
@@ -10,7 +12,26 @@ interface Event {
   age: string;
   price: string;
   description: string;
+  registration_url?: string | null;
+  status?: EventStatus;
+  division?: string | null;
+  venue_name?: string | null;
+  venue_address?: string | null;
 }
+
+const statusLabels: Record<EventStatus, string> = {
+  planned: 'Schedule Posted',
+  registration_open: 'Registration Open',
+  registration_closed: 'Registration Closed',
+  canceled: 'Canceled',
+};
+
+const statusClasses: Record<EventStatus, string> = {
+  planned: 'bg-gray-800 text-gray-300 border-gray-700',
+  registration_open: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20',
+  registration_closed: 'bg-amber-500/10 text-amber-300 border-amber-500/20',
+  canceled: 'bg-red-500/10 text-red-300 border-red-500/20',
+};
 
 export function Events({ events }: { events: Event[] }) {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
@@ -40,6 +61,8 @@ export function Events({ events }: { events: Event[] }) {
           <div className="space-y-4 sm:space-y-6">
             {events.map((event, index) => {
             const isExpanded = expandedIndex === index;
+            const status = event.status || 'planned';
+            const registrationOpen = status === 'registration_open' && event.registration_url;
             return (
               <div
                 key={`${event.name}-${index}`}
@@ -63,9 +86,18 @@ export function Events({ events }: { events: Event[] }) {
                     </div>
                     <div className="flex flex-wrap items-center gap-3 flex-1">
                       <span className="text-[10px] sm:text-[11px] font-black text-blue-400 bg-blue-900/30 px-2.5 py-1 rounded-lg uppercase tracking-widest shrink-0 border border-blue-800/50">
-                        {event.age}
+                        {event.division || event.age}
+                      </span>
+                      <span className={cn("text-[10px] sm:text-[11px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-widest shrink-0 border", statusClasses[status])}>
+                        {statusLabels[status]}
                       </span>
                       <h3 className="text-lg sm:text-xl font-black text-white leading-tight">{event.name}</h3>
+                      {event.venue_name && (
+                        <span className="flex basis-full items-center gap-1.5 text-xs text-gray-500 sm:basis-auto">
+                          <MapPin className="h-3.5 w-3.5" />
+                          {event.venue_name}
+                        </span>
+                      )}
                     </div>
                   </div>
                   <div className={cn(
@@ -78,7 +110,7 @@ export function Events({ events }: { events: Event[] }) {
 
                 <div className={cn(
                   "px-5 sm:px-8 transition-all duration-300 ease-in-out",
-                  isExpanded ? "pb-8 sm:pb-12 max-h-[800px] opacity-100" : "max-h-0 opacity-0 pointer-events-none"
+                  isExpanded ? "pb-8 sm:pb-12 max-h-[1000px] opacity-100" : "max-h-0 opacity-0 pointer-events-none"
                 )}>
                   <div className="pt-6 sm:pt-8 border-t border-gray-800 space-y-6 sm:space-y-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
@@ -95,11 +127,41 @@ export function Events({ events }: { events: Event[] }) {
                         </div>
                       </div>
                       
-                      <div className="flex flex-col justify-center">
+                      <div className="flex flex-col justify-center gap-6">
                         <h4 className="text-xs sm:text-sm font-bold text-gray-500 uppercase tracking-[0.2em] mb-4">Event Details</h4>
                         <p className="text-gray-400 text-base sm:text-lg leading-relaxed font-medium">
                           {event.description}
                         </p>
+                        {event.venue_name && (
+                          <div className="rounded-2xl border border-gray-800 bg-gray-900/60 p-4">
+                            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-gray-500">
+                              <MapPin className="h-4 w-4 text-blue-500" />
+                              Venue
+                            </div>
+                            <div className="mt-3 text-sm font-bold text-white">{event.venue_name}</div>
+                            {event.venue_address && (
+                              <div className="mt-1 text-sm text-gray-500">{event.venue_address}</div>
+                            )}
+                          </div>
+                        )}
+                        {registrationOpen ? (
+                          <a
+                            href={event.registration_url || undefined}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center justify-center gap-2 rounded-full bg-blue-600 px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-blue-700"
+                          >
+                            Register Team <ExternalLink className="h-4 w-4" />
+                          </a>
+                        ) : (
+                          <div className="rounded-2xl border border-gray-800 bg-gray-900/60 p-4 text-sm text-gray-400">
+                            {status === 'registration_closed'
+                              ? 'Registration is closed for this event.'
+                              : status === 'canceled'
+                                ? 'This event has been canceled.'
+                                : 'Registration details will be posted when available.'}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>

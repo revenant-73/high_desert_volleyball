@@ -2,6 +2,7 @@ export interface EventLike {
   name: string;
   date: string;
   age: string;
+  start_date?: string | null;
 }
 
 const monthIndexes: Record<string, number> = {
@@ -46,9 +47,18 @@ function eventStartTime(date: string) {
   return Date.UTC(year, month, day);
 }
 
+function structuredEventStartTime(event: EventLike) {
+  if (event.start_date) {
+    const parsed = Date.parse(`${event.start_date}T00:00:00Z`);
+    if (!Number.isNaN(parsed)) return parsed;
+  }
+
+  return eventStartTime(event.date || '');
+}
+
 export function sortEventsByStartDate<T extends EventLike>(events: T[]) {
   return [...events].sort((a, b) => {
-    const byDate = eventStartTime(a.date || '') - eventStartTime(b.date || '');
+    const byDate = structuredEventStartTime(a) - structuredEventStartTime(b);
     if (byDate !== 0) return byDate;
 
     const byName = a.name.localeCompare(b.name);

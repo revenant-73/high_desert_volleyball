@@ -8,6 +8,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "db:migrate:auth": "node scripts/migrate-auth.cjs",
+    "db:migrate:events": "node scripts/migrate-events.cjs",
     "admin:upsert": "node scripts/upsert-admin.cjs"
   },
   "dependencies": {

@@ -55,6 +55,12 @@ Apply the auth tables:
 npm run db:migrate:auth
 ```
 
+Apply event schedule fields:
+
+```bash
+npm run db:migrate:events
+```
+
 Create or update an admin account by setting `ADMIN_EMAIL`, `ADMIN_ACCOUNT_PASSWORD`, and optionally `ADMIN_NAME` in `.env`, then run:
 
 ```bash

@@ -1,9 +1,10 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import EventManager from '../../components/admin/EventManager';
-import { getEvents } from '../../lib/db';
+import { getEvents, getVenues } from '../../lib/db';
 
 const events = await getEvents();
+const venues = await getVenues();
 ---
 
 <Layout title="Manage Events | HDVL Admin">
@@ -16,7 +17,7 @@ const events = await getEvents();
         <h1 class="text-3xl font-bold">Manage Events</h1>
       </header>
 
-      <EventManager client:load initialEvents={events} />
+      <EventManager client:load initialEvents={events} venues={venues} />
     </div>
   </main>
 </Layout>

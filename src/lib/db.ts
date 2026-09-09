@@ -9,6 +9,30 @@ export interface Event {
   age: string;
   price: string;
   description: string;
+  start_date?: string | null;
+  end_date?: string | null;
+  registration_url?: string | null;
+  status?: EventStatus;
+  division?: string | null;
+  venue_id?: number | null;
+  venue_name?: string | null;
+  venue_address?: string | null;
+}
+
+export type EventStatus = 'planned' | 'registration_open' | 'registration_closed' | 'canceled';
+
+export interface EventInput {
+  name: string;
+  date: string;
+  age: string;
+  price: string;
+  description: string;
+  start_date?: string | null;
+  end_date?: string | null;
+  registration_url?: string | null;
+  status?: EventStatus | string | null;
+  division?: string | null;
+  venue_id?: number | string | null;
 }
 
 export interface Venue {
@@ -47,9 +71,56 @@ function parseVenue(row: any): Venue {
   };
 }
 
+function normalizeText(value: unknown) {
+  return String(value || '').trim();
+}
+
+function normalizeOptionalText(value: unknown) {
+  const text = normalizeText(value);
+  return text || null;
+}
+
+function normalizeEventStatus(value: unknown): EventStatus {
+  const status = normalizeText(value);
+  if (['planned', 'registration_open', 'registration_closed', 'canceled'].includes(status)) {
+    return status as EventStatus;
+  }
+
+  return 'planned';
+}
+
+function normalizeVenueId(value: unknown) {
+  if (value === null || value === undefined || value === '') return null;
+
+  const id = Number(value);
+  return Number.isInteger(id) && id > 0 ? id : null;
+}
+
+function eventArgs(event: EventInput) {
+  return [
+    normalizeText(event.name),
+    normalizeText(event.date),
+    normalizeText(event.age),
+    normalizeText(event.price),
+    normalizeText(event.description),
+    normalizeOptionalText(event.start_date),
+    normalizeOptionalText(event.end_date),
+    normalizeOptionalText(event.registration_url),
+    normalizeEventStatus(event.status),
+    normalizeOptionalText(event.division) || normalizeText(event.age),
+    normalizeVenueId(event.venue_id),
+  ];
+}
+
 export async function getEvents(): Promise<Event[]> {
   try {
-    const result = await turso.execute('SELECT * FROM events');
+    const result = await turso.execute(`
+      SELECT events.*,
+        venues.name AS venue_name,
+        venues.address AS venue_address
+      FROM events
+      LEFT JOIN venues ON venues.id = events.venue_id
+    `);
     return sortEventsByStartDate(result.rows as unknown as Event[]);
   } catch (error) {
     console.error('Error fetching events:', error);
@@ -57,11 +128,27 @@ export async function getEvents(): Promise<Event[]> {
   }
 }
 
-export async function createEvent(event: { name: string, date: string, age: string, price: string, description: string }) {
+export async function createEvent(event: EventInput) {
   try {
     const result = await turso.execute({
-      sql: 'INSERT INTO events (name, date, age, price, description) VALUES (?, ?, ?, ?, ?) RETURNING *',
-      args: [event.name, event.date, event.age, event.price, event.description]
+      sql: `
+        INSERT INTO events (
+          name,
+          date,
+          age,
+          price,
+          description,
+          start_date,
+          end_date,
+          registration_url,
+          status,
+          division,
+          venue_id
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        RETURNING *
+      `,
+      args: eventArgs(event)
     });
 
     return { success: true, event: result.rows[0] as unknown as Event };
@@ -71,11 +158,26 @@ export async function createEvent(event: { name: string, date: string, age: stri
   }
 }
 
-export async function updateEvent(id: number, event: { name: string, date: string, age: string, price: string, description: string }) {
+export async function updateEvent(id: number, event: EventInput) {
   try {
     const result = await turso.execute({
-      sql: 'UPDATE events SET name = ?, date = ?, age = ?, price = ?, description = ? WHERE id = ? RETURNING *',
-      args: [event.name, event.date, event.age, event.price, event.description, id]
+      sql: `
+        UPDATE events
+        SET name = ?,
+          date = ?,
+          age = ?,
+          price = ?,
+          description = ?,
+          start_date = ?,
+          end_date = ?,
+          registration_url = ?,
+          status = ?,
+          division = ?,
+          venue_id = ?
+        WHERE id = ?
+        RETURNING *
+      `,
+      args: [...eventArgs(event), id]
     });
 
     if (!result.rows[0]) {
