@@ -17,7 +17,7 @@ import { sortEventsByStartDate } from "@/lib/eventSorting";
 
 type EventStatus = "planned" | "registration_open" | "registration_closed" | "canceled";
 type TournamentFormat = "one_day" | "two_day";
-type EventFilter = "all" | "featured" | "one_day" | "two_day";
+type EventFilter = "all" | "one_day" | "two_day";
 
 interface EventVenue {
   id: number;
@@ -162,11 +162,13 @@ function EventCard({
   eventKey,
   isExpanded,
   onToggle,
+  variant = "standard",
 }: {
   event: Event;
   eventKey: string;
   isExpanded: boolean;
   onToggle: (key: string) => void;
+  variant?: "standard" | "featured";
 }) {
   const status = event.status || "planned";
   const canRegister = Boolean(event.registration_url) && status !== "registration_closed" && status !== "canceled";
@@ -174,15 +176,29 @@ function EventCard({
   const format = eventFormat(event);
   const division = event.division || event.age;
   const detailsId = `event-details-${eventKey}`;
+  const featuredCard = variant === "featured";
 
   return (
     <article
       className={cn(
-        "overflow-hidden rounded-2xl border bg-gray-950/90 shadow-xl shadow-black/20 transition",
-        isExpanded ? "border-blue-400/40 ring-2 ring-blue-400/15" : "border-white/10 hover:border-blue-400/30"
+        "overflow-hidden rounded-2xl border shadow-xl shadow-black/20 transition",
+        featuredCard
+          ? "relative border-amber-300/35 bg-[linear-gradient(135deg,rgba(251,191,36,0.16),rgba(59,130,246,0.10)_38%,rgba(3,7,18,0.96)_72%)]"
+          : "bg-gray-950/90",
+        isExpanded
+          ? featuredCard
+            ? "ring-2 ring-amber-300/20"
+            : "border-blue-400/40 ring-2 ring-blue-400/15"
+          : featuredCard
+            ? "hover:border-amber-200/60 hover:shadow-amber-950/20"
+            : "border-white/10 hover:border-blue-400/30"
       )}
     >
-      <div className="p-4 sm:p-5 lg:p-6">
+      {featuredCard && (
+        <div className="pointer-events-none absolute right-0 top-0 h-32 w-32 bg-amber-200/10 blur-3xl" aria-hidden="true" />
+      )}
+
+      <div className={cn("relative p-4 sm:p-5 lg:p-6", featuredCard && "lg:p-7")}>
         <button
           type="button"
           onClick={() => onToggle(eventKey)}
@@ -190,13 +206,25 @@ function EventCard({
           aria-expanded={isExpanded}
           aria-controls={detailsId}
         >
-          <div className="grid gap-4 lg:grid-cols-[9.5rem_minmax(0,1fr)_12rem_2.75rem] lg:items-center">
+          <div
+            className={cn(
+              "grid gap-4 lg:items-center",
+              featuredCard
+                ? "lg:grid-cols-[10.5rem_minmax(0,1fr)_13rem_2.75rem]"
+                : "lg:grid-cols-[9.5rem_minmax(0,1fr)_12rem_2.75rem]"
+            )}
+          >
             <div className="flex items-center gap-3 lg:block">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-blue-400/25 bg-blue-500/10 lg:mb-3">
-                <CalendarDays className="h-5 w-5 text-blue-300" aria-hidden="true" />
+              <div
+                className={cn(
+                  "flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border lg:mb-3",
+                  featuredCard ? "border-amber-300/35 bg-amber-300/15" : "border-blue-400/25 bg-blue-500/10"
+                )}
+              >
+                <CalendarDays className={cn("h-5 w-5", featuredCard ? "text-amber-200" : "text-blue-300")} aria-hidden="true" />
               </div>
               <div>
-                <div className="text-base font-black text-blue-200 sm:text-lg">{event.date}</div>
+                <div className={cn("text-base font-black sm:text-lg", featuredCard ? "text-amber-100" : "text-blue-200")}>{event.date}</div>
                 <div className="mt-1 text-[11px] font-black uppercase tracking-[0.12em] text-gray-500">
                   {shortFormatLabels[format]} event
                 </div>
@@ -206,9 +234,9 @@ function EventCard({
             <div className="min-w-0">
               <div className="mb-3 flex flex-wrap items-center gap-2">
                 {isFeatured(event) && (
-                  <span className="inline-flex items-center gap-1.5 rounded-lg border border-amber-300/25 bg-amber-300/10 px-2.5 py-1 text-[11px] font-black uppercase tracking-[0.08em] text-amber-200">
+                  <span className="inline-flex items-center gap-1.5 rounded-lg border border-amber-300/30 bg-amber-300/15 px-2.5 py-1 text-[11px] font-black uppercase tracking-[0.08em] text-amber-100">
                     <Star className="h-3.5 w-3.5 fill-amber-200" aria-hidden="true" />
-                    Featured
+                    Featured Event
                   </span>
                 )}
                 <span className="rounded-lg border border-blue-400/25 bg-blue-500/10 px-2.5 py-1 text-[11px] font-black uppercase tracking-[0.08em] text-blue-200">
@@ -218,7 +246,9 @@ function EventCard({
                   {division}
                 </span>
               </div>
-              <h3 className="text-xl font-black leading-tight text-white sm:text-2xl">{event.name}</h3>
+              <h3 className={cn("font-black leading-tight text-white", featuredCard ? "text-2xl sm:text-3xl" : "text-xl sm:text-2xl")}>
+                {event.name}
+              </h3>
               <div className="mt-3 flex items-start gap-2 text-sm text-gray-400">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gray-500" aria-hidden="true" />
                 <span>{venueSummary(venues)}</span>
@@ -239,18 +269,31 @@ function EventCard({
             <div
               className={cn(
                 "hidden h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] transition lg:flex",
-                isExpanded ? "rotate-180 border-blue-400/30 bg-blue-500/10" : "group-hover:border-blue-400/30"
+                isExpanded
+                  ? featuredCard
+                    ? "rotate-180 border-amber-300/35 bg-amber-300/10"
+                    : "rotate-180 border-blue-400/30 bg-blue-500/10"
+                  : featuredCard
+                    ? "group-hover:border-amber-300/35"
+                    : "group-hover:border-blue-400/30"
               )}
             >
-              <ChevronDown className={cn("h-5 w-5 text-gray-400", isExpanded && "text-blue-200")} aria-hidden="true" />
+              <ChevronDown className={cn("h-5 w-5 text-gray-400", isExpanded && (featuredCard ? "text-amber-200" : "text-blue-200"))} aria-hidden="true" />
             </div>
           </div>
         </button>
 
-        <div className="mt-4 flex flex-col gap-3 border-t border-white/10 pt-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+        <div
+          className={cn(
+            "mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between",
+            featuredCard
+              ? "rounded-xl border border-amber-200/15 bg-amber-200/[0.04] p-3 sm:p-4"
+              : "border-t border-white/10 pt-4"
+          )}
+        >
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-gray-500">
-            <Medal className="h-4 w-4 text-blue-300" aria-hidden="true" />
-            {venues.length > 1 ? `${venues.length} venues assigned` : venues.length === 1 ? "Venue assigned" : "Venue pending"}
+            <Medal className={cn("h-4 w-4", featuredCard ? "text-amber-200" : "text-blue-300")} aria-hidden="true" />
+            {featuredCard ? "Priority registration target" : venues.length > 1 ? `${venues.length} venues assigned` : venues.length === 1 ? "Venue assigned" : "Venue pending"}
           </div>
           <div className="grid gap-2 sm:grid-cols-2">
             {canRegister ? (
@@ -276,7 +319,12 @@ function EventCard({
         )}
       >
         <div className="overflow-hidden">
-          <div className="border-t border-white/10 bg-gray-900/70 px-4 py-5 sm:px-5 lg:px-6 lg:py-6">
+          <div
+            className={cn(
+              "border-t px-4 py-5 sm:px-5 lg:px-6 lg:py-6",
+              featuredCard ? "border-amber-200/15 bg-gray-950/80" : "border-white/10 bg-gray-900/70"
+            )}
+          >
             <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(17rem,0.55fr)]">
               <div>
                 <h4 className="text-xs font-black uppercase tracking-[0.14em] text-gray-500">Event Details</h4>
@@ -335,17 +383,23 @@ export function Events({ events }: { events: Event[] }) {
   const schedule = useMemo(() => {
     const sortedEvents = sortEventsByStartDate(events);
     const featured = sortFeaturedEvents(sortedEvents.filter(isFeatured));
-    const oneDay = sortedEvents.filter((event) => eventFormat(event) === "one_day");
-    const twoDay = sortedEvents.filter((event) => eventFormat(event) === "two_day");
+    const otherEvents = sortedEvents.filter((event) => !isFeatured(event));
+    const oneDay = otherEvents.filter((event) => eventFormat(event) === "one_day");
+    const twoDay = otherEvents.filter((event) => eventFormat(event) === "two_day");
 
     return {
-      all: sortedEvents,
       featured,
+      other: {
+        all: otherEvents,
+        one_day: oneDay,
+        two_day: twoDay,
+      },
       one_day: oneDay,
       two_day: twoDay,
       counts: {
         total: sortedEvents.length,
         featured: featured.length,
+        other: otherEvents.length,
         oneDay: oneDay.length,
         twoDay: twoDay.length,
       },
@@ -353,13 +407,12 @@ export function Events({ events }: { events: Event[] }) {
   }, [events]);
 
   const filterOptions: Array<{ id: EventFilter; label: string; count: number }> = [
-    { id: "all", label: "All", count: schedule.counts.total },
-    { id: "featured", label: "Featured", count: schedule.counts.featured },
+    { id: "all", label: "All Other", count: schedule.counts.other },
     { id: "one_day", label: "1-Day", count: schedule.counts.oneDay },
     { id: "two_day", label: "2-Day", count: schedule.counts.twoDay },
   ];
 
-  const filteredEvents = schedule[activeFilter];
+  const filteredEvents = schedule.other[activeFilter];
 
   const toggleEvent = (key: string) => {
     setExpandedKey((current) => (current === key ? null : key));
@@ -406,60 +459,103 @@ export function Events({ events }: { events: Event[] }) {
             </p>
           </div>
         ) : (
-          <div className="mt-10 space-y-6">
-            <div className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-gray-900/60 p-3 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-center gap-2 px-1 text-xs font-black uppercase tracking-[0.14em] text-gray-500">
-                <ListFilter className="h-4 w-4 text-blue-300" aria-hidden="true" />
-                Filter Events
+          <div className="mt-10 space-y-10">
+            {schedule.featured.length > 0 && (
+              <div className="space-y-4">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                  <div>
+                    <div className="inline-flex items-center gap-2 rounded-xl border border-amber-300/25 bg-amber-300/10 px-3 py-2 text-xs font-black uppercase tracking-[0.14em] text-amber-100">
+                      <Star className="h-4 w-4 fill-amber-200" aria-hidden="true" />
+                      Featured Events
+                    </div>
+                    <h3 className="mt-3 text-2xl font-black leading-tight text-white sm:text-3xl">
+                      Priority tournaments for fast registration decisions.
+                    </h3>
+                  </div>
+                  <div className="max-w-xl text-sm font-medium leading-6 text-gray-400">
+                    Featured events stay pinned here so coaches and club directors can act without losing them in the full schedule.
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  {schedule.featured.map((event, index) => {
+                    const key = eventKey(event, index);
+                    return (
+                      <EventCard
+                        key={key}
+                        event={event}
+                        eventKey={key}
+                        isExpanded={expandedKey === key}
+                        onToggle={toggleEvent}
+                        variant="featured"
+                      />
+                    );
+                  })}
+                </div>
               </div>
-              <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-end">
-                {filterOptions.map((option) => (
-                  <button
-                    key={option.id}
-                    type="button"
-                    onClick={() => setFilter(option.id)}
-                    aria-pressed={activeFilter === option.id}
-                    className={cn(
-                      "inline-flex min-h-10 items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-black transition focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2 focus:ring-offset-gray-950",
-                      activeFilter === option.id
-                        ? "bg-blue-500 text-white shadow-lg shadow-blue-950/30"
-                        : "border border-white/10 bg-white/[0.04] text-gray-300 hover:border-blue-400/30 hover:text-white"
-                    )}
-                  >
-                    {option.label}
-                    <span
+            )}
+
+            <div className="space-y-5">
+              <div className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-gray-900/60 p-4 sm:p-5 lg:flex-row lg:items-center lg:justify-between">
+                <div>
+                  <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.14em] text-gray-500">
+                    <ListFilter className="h-4 w-4 text-blue-300" aria-hidden="true" />
+                    All Other Events
+                  </div>
+                  <p className="mt-2 text-sm leading-6 text-gray-400">
+                    Sort the remaining schedule by tournament format. Featured events stay visible above.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-end">
+                  {filterOptions.map((option) => (
+                    <button
+                      key={option.id}
+                      type="button"
+                      onClick={() => setFilter(option.id)}
+                      aria-pressed={activeFilter === option.id}
                       className={cn(
-                        "rounded-md px-1.5 py-0.5 text-[11px]",
-                        activeFilter === option.id ? "bg-white/20 text-white" : "bg-gray-950 text-gray-400"
+                        "inline-flex min-h-10 items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-black transition focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2 focus:ring-offset-gray-950",
+                        activeFilter === option.id
+                          ? "bg-blue-500 text-white shadow-lg shadow-blue-950/30"
+                          : "border border-white/10 bg-white/[0.04] text-gray-300 hover:border-blue-400/30 hover:text-white"
                       )}
                     >
-                      {option.count}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              {filteredEvents.length > 0 ? (
-                filteredEvents.map((event, index) => {
-                  const key = eventKey(event, index);
-                  return (
-                    <EventCard
-                      key={key}
-                      event={event}
-                      eventKey={key}
-                      isExpanded={expandedKey === key}
-                      onToggle={toggleEvent}
-                    />
-                  );
-                })
-              ) : (
-                <div className="rounded-2xl border border-white/10 bg-gray-900/60 px-6 py-10 text-center">
-                  <h3 className="text-lg font-black text-white">No events in this view</h3>
-                  <p className="mt-2 text-sm text-gray-400">Try another filter to see the full HDVL schedule.</p>
+                      {option.label}
+                      <span
+                        className={cn(
+                          "rounded-md px-1.5 py-0.5 text-[11px]",
+                          activeFilter === option.id ? "bg-white/20 text-white" : "bg-gray-950 text-gray-400"
+                        )}
+                      >
+                        {option.count}
+                      </span>
+                    </button>
+                  ))}
                 </div>
-              )}
+              </div>
+
+              <div className="space-y-4">
+                {filteredEvents.length > 0 ? (
+                  filteredEvents.map((event, index) => {
+                    const key = eventKey(event, index);
+                    return (
+                      <EventCard
+                        key={key}
+                        event={event}
+                        eventKey={key}
+                        isExpanded={expandedKey === key}
+                        onToggle={toggleEvent}
+                      />
+                    );
+                  })
+                ) : (
+                  <div className="rounded-2xl border border-white/10 bg-gray-900/60 px-6 py-10 text-center">
+                    <h3 className="text-lg font-black text-white">No other events in this view</h3>
+                    <p className="mt-2 text-sm text-gray-400">Try another format filter to see the remaining HDVL schedule.</p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}
