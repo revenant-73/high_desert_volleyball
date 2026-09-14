@@ -131,7 +131,7 @@ export function Navbar({ siteConfig }: { siteConfig: SiteConfig }) {
               href={siteConfig.links.register}
               className="bg-blue-600 text-white px-6 py-2.5 rounded-full text-sm font-bold hover:bg-blue-700 transition-all hover:shadow-lg hover:shadow-blue-900/40"
             >
-              Register Now
+              Registration Guide
             </a>
           </div>
 
@@ -186,7 +186,7 @@ export function Navbar({ siteConfig }: { siteConfig: SiteConfig }) {
               onClick={closeMenu}
               className="block w-full text-center bg-blue-600 text-white px-5 py-4 rounded-xl text-lg font-bold hover:bg-blue-700 active:scale-[0.98] transition-all"
             >
-              Register Now
+              Registration Guide
             </a>
           </div>
         </div>

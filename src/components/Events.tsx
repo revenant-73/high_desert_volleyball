@@ -433,10 +433,10 @@ export function Events({ events }: { events: Event[] }) {
               HDVL Tournament Schedule
             </div>
             <h2 className="max-w-3xl text-3xl font-black leading-tight tracking-normal text-white sm:text-4xl lg:text-5xl">
-              Find the right event, confirm the venue, and act fast.
+              Find the right tournament for your player.
             </h2>
             <p className="mt-4 max-w-2xl text-base leading-7 text-gray-400 sm:text-lg">
-              Featured events, 1-day tournaments, and 2-day tournaments are organized for quick scanning by coaches and families.
+              Browse upcoming HDVL events by date, format, age division, venue, and registration status.
             </p>
           </div>
 
@@ -469,11 +469,11 @@ export function Events({ events }: { events: Event[] }) {
                       Featured Events
                     </div>
                     <h3 className="mt-3 text-2xl font-black leading-tight text-white sm:text-3xl">
-                      Priority tournaments for fast registration decisions.
+                      Key tournaments to check first.
                     </h3>
                   </div>
                   <div className="max-w-xl text-sm font-medium leading-6 text-gray-400">
-                    Featured events stay pinned here so coaches and club directors can act without losing them in the full schedule.
+                    Featured events stay pinned here so parents and coaches do not miss important registration windows.
                   </div>
                 </div>
 
@@ -503,7 +503,7 @@ export function Events({ events }: { events: Event[] }) {
                     All Other Events
                   </div>
                   <p className="mt-2 text-sm leading-6 text-gray-400">
-                    Sort the remaining schedule by tournament format. Featured events stay visible above.
+                    Filter the remaining schedule by tournament format. Featured events stay visible above.
                   </p>
                 </div>
 
@@ -552,7 +552,7 @@ export function Events({ events }: { events: Event[] }) {
                 ) : (
                   <div className="rounded-2xl border border-white/10 bg-gray-900/60 px-6 py-10 text-center">
                     <h3 className="text-lg font-black text-white">No other events in this view</h3>
-                    <p className="mt-2 text-sm text-gray-400">Try another format filter to see the remaining HDVL schedule.</p>
+                    <p className="mt-2 text-sm text-gray-400">Try another format filter to see more upcoming HDVL events.</p>
                   </div>
                 )}
               </div>

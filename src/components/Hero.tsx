@@ -21,9 +21,9 @@ interface SiteConfig {
 export function Hero({ siteConfig }: { siteConfig: SiteConfig }) {
   const quickFacts = [
     { label: "JVA Sanctioned", icon: ShieldCheck },
-    { label: "12U-18U Teams", icon: Medal },
-    { label: "Treasure Valley", icon: MapPin },
-    { label: "1-Day + 2-Day Events", icon: CalendarDays },
+    { label: "12U-18U Divisions", icon: Medal },
+    { label: "Local Venues", icon: MapPin },
+    { label: "Clear Event Info", icon: CalendarDays },
   ];
 
   return (
@@ -66,7 +66,7 @@ export function Hero({ siteConfig }: { siteConfig: SiteConfig }) {
                   Registration Opens October 27
                 </div>
                 <div className="mt-2 text-xs font-bold uppercase tracking-[0.08em] text-blue-300 sm:text-sm sm:tracking-[0.14em]">
-                  Southwest Idaho Youth Volleyball
+                  Tournament Info for Families
                 </div>
               </div>
             </div>
@@ -76,7 +76,7 @@ export function Hero({ siteConfig }: { siteConfig: SiteConfig }) {
             </h1>
 
             <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-gray-300 sm:mt-5 sm:text-base sm:leading-8 md:mx-0 lg:mt-6 lg:text-lg">
-              {siteConfig.tagline}. JVA sanctioned competition for Treasure Valley teams<span className="hidden sm:inline">, built around clear event information, credible venues, and simple team registration</span>.
+              {siteConfig.tagline}. See upcoming dates, age divisions, locations, costs, and registration links<span className="hidden sm:inline"> so your family can plan the season with less guesswork</span>.
             </p>
 
             <div className="mt-6 grid grid-cols-2 gap-3 sm:mt-7 sm:flex sm:justify-center md:justify-start lg:mt-8">
@@ -95,7 +95,7 @@ export function Hero({ siteConfig }: { siteConfig: SiteConfig }) {
                 className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/5 px-3 py-3 text-sm font-black text-white transition hover:border-blue-300 hover:bg-blue-500/10 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2 focus:ring-offset-gray-950 active:scale-[0.98] sm:min-h-14 sm:px-6 sm:py-4 sm:text-base"
               >
                 <span className="lg:hidden">Events</span>
-                <span className="hidden lg:inline">View Events</span>
+                <span className="hidden lg:inline">Find an Event</span>
                 <Trophy className="h-5 w-5" />
               </a>
               <a
@@ -142,15 +142,15 @@ export function Hero({ siteConfig }: { siteConfig: SiteConfig }) {
                         2026 League Season
                       </div>
                       <div className="mt-1 text-base font-black text-white lg:text-xl">
-                        <span className="lg:hidden">Coach-ready events</span>
-                        <span className="hidden lg:inline">Events built for coaches to act fast</span>
+                        <span className="lg:hidden">Family-ready details</span>
+                        <span className="hidden lg:inline">Dates, venues, and registration in one place</span>
                       </div>
                     </div>
                     <a
                       href="#events"
                       className="inline-flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-black text-gray-950 transition hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2 focus:ring-offset-gray-950 lg:py-3"
                     >
-                      Schedule <PlayCircle className="h-4 w-4" />
+                      View Events <PlayCircle className="h-4 w-4" />
                     </a>
                   </div>
                 </div>

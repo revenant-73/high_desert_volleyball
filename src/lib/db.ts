@@ -64,9 +64,9 @@ export interface Venue {
 export const siteConfig = {
   name: "High Desert Volleyball League",
   shortName: "HDVL",
-  tagline: "Southwest Idaho's First Choice for Youth Volleyball",
+  tagline: "Local volleyball tournaments for Treasure Valley families",
   email: "highdesertvball@gmail.com",
-  description: "HDVL is the only JVA sanctioned league in Southern Idaho, ensuring a high level of coaching education, player safety, and officiating. Open to teams of all ages (12u-18u) and affiliations (USA, AAU, or none).",
+  description: "HDVL hosts JVA sanctioned volleyball events for 12U-18U teams across Southern Idaho. Families can find dates, venues, registration details, and event expectations in one place.",
   links: {
     register: "/register-guide",
     waiver: "https://highdesertvball.com/waivers",
